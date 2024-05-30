@@ -39,7 +39,8 @@ The corresponding code should be generated to be under `app/api` and `rpi/api` f
 
 ## Core Function Manual
 ### Discovery & Pairing
-The OralEye devices are configured to be discoverable through both Wifi and Bluetooth.
+The OralEye devices are configured to be discoverable through both Wifi and Bluetooth. Wifi discovery is done through mDNS protocol and used for discovery of devices that already on same local network with the host. Bluetooth discover is used for first time pairing, device setup and troubleshooting.
+
 
 ### Streaming
 
