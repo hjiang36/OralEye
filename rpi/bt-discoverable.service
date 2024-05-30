@@ -1,0 +1,13 @@
+[Unit]
+Description=Bluetooth Discovery Service
+After=bluetooth.target bluetooth.service gatt-server.service
+Requires=bluetooth.service gatt-server.service
+
+[Service]
+ExecStart=/usr/bin/bt-discoverable.sh
+Type=simple
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

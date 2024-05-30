@@ -1,0 +1,13 @@
+[Unit]
+Description=Bluetooth Agent Service
+After=bluetooth.target bluetooth.service
+Requires=bluetooth.service
+
+[Service]
+ExecStart=/usr/bin/simple-agent.py
+Type=simple
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

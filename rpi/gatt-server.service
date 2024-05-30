@@ -1,0 +1,14 @@
+[Unit]
+Description=GATT Server Service
+After=bluetooth.target bluetooth.service bluetooth-agent.service
+Requires=bluetooth.service bluetooth-agent.service
+
+[Service]
+ExecStart=/usr/bin/gatt_server.py
+Type=simple
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+
