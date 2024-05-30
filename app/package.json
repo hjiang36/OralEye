@@ -1,0 +1,21 @@
+{
+  "name": "bluetooth-scanner",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "package-mac": "electron-packager . OralEye --platform=darwin --arch=x64 --out=dist --overwrite",
+    "dist": "electron-builder"
+  },
+  "dependencies": {
+    "bootstrap": "^5.3.3",
+    "http-server": "^14.1.1",
+    "noble": "latest"
+  },
+  "devDependencies": {
+    "electron": "latest",
+    "electron-builder": "latest",
+    "electron-packager": "^17.1.2"
+  }
+}
