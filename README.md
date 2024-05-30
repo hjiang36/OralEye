@@ -35,6 +35,7 @@ Regeneration can be done with
 ```sh
 make api
 ```
+The corresponding code should be generated to be under `app/api` and `rpi/api` folder.
 
 ## Core Function Manual
 ### Discovery & Pairing
