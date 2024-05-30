@@ -4,6 +4,8 @@ OralEye prototype software using Raspberry Pi device
 This repository contains code for both device side (under [rpi](https://github.com/hjiang36/OralEye/tree/main/rpi) folder) and host side (under [app](https://github.com/hjiang36/OralEye/tree/main/app) folder) control software.
 
 ## Getting Started
+This device describes how to setup host and device environmnet for developers. Users are strongly recommended to use pre-built relaese binaries (link to be added).
+
 ### Device Setup
 The device should be configured properly and no special setup steps required. The following steps would only be needed if started with vanilla raspberry pi system.
 
@@ -21,8 +23,9 @@ For user, we recommend download the app executable in release tag. Here we descr
 * **Run** `npm start` to start the host side application
 
 
-## Device Control
-### Pairing & Configuration
+## Core Function Manual
+### Discovery & Pairing
+The OralEye devices are configured to be discoverable through both Wifi and Bluetooth.
 
 ### Streaming
 
