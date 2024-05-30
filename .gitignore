@@ -1,1 +1,5 @@
-app/openapi
+# These are the general API endpoints for the app and the Raspberry Pi
+# If missing, use `make api` to generate them
+app/api
+openapitools.json
+rpi/api

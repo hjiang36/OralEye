@@ -15,13 +15,26 @@ The device should be configured properly and no special setup steps required. Th
 
 All files and settings should be applied. The device will be rebooted and the device is ready to be used.
 
-### Host Developer Setup
+### Host Setup
 For user, we recommend download the app executable in release tag. Here we describe the developer setup to build and run from source code.
 
 * **Install** [node & npm](https://nodejs.org/en/download/package-manager)
 * **Run** `npm install` to install all dependencies libraries
+* **Run** `make api` to generate API SDK if needed.
 * **Run** `npm start` to start the host side application
 
+### API Stub & Client SDK Generation
+The OpenAPI definition can be found in `openapi.yaml` file. It can be visually edited with [swagger editor](https://editor.swagger.io/) or any other REST / OpenAPI editing tools.
+
+If changes are made to the `openapi.yaml`, both API stub on Raspberry Pi and client SDK needs to be updated. We use `openapi-generator-cli` to auto-generate the code for stub and SDK, which can be installed using following command. `sudo` may be needed depending on system.
+
+```sh
+npm install @openapitools/openapi-generator-cli -g
+```
+Regeneration can be done with
+```sh
+make api
+```
 
 ## Core Function Manual
 ### Discovery & Pairing
@@ -34,3 +47,4 @@ The OralEye devices are configured to be discoverable through both Wifi and Blue
 ### Capture
 
 ## Troubleshoot
+
