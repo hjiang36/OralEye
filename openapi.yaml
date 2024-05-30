@@ -1,0 +1,222 @@
+openapi: 3.0.0
+info:
+  title: OralEye API
+  version: 0.0.1
+  description: API for controlling lights and camera on OralEye device
+
+tags:
+  - name: lights
+    description: Endpoints for controlling lights
+  - name: camera
+    description: Endpoints for controlling the camera
+
+paths:
+  /lights/status:
+    get:
+      tags:
+        - lights
+      summary: Get status of the lights
+      responses:
+        '200':
+          description: Light statuses retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  white_led:
+                    type: string
+                    enum: [on, off]
+                  blue_led:
+                    type: string
+                    enum: [on, off]
+                  red_laser:
+                    type: string
+                    enum: [on, off]
+
+  /lights/control:
+    post:
+      tags:
+        - lights
+      summary: Set lights on/off
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                white_led:
+                  type: string
+                  enum: [on, off]
+                blue_led:
+                  type: string
+                  enum: [on, off]
+                red_laser:
+                  type: string
+                  enum: [on, off]
+      responses:
+        '200':
+          description: Light statuses updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /camera/preview/start:
+    post:
+      tags:
+        - camera
+      summary: Start camera preview
+      responses:
+        '200':
+          description: Camera preview started successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /camera/preview/stop:
+    post:
+      tags:
+        - camera
+      summary: Stop camera preview
+      responses:
+        '200':
+          description: Camera preview stopped successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /camera/autofocus:
+    post:
+      tags:
+        - camera
+      summary: Set auto-focus on/off
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                autofocus:
+                  type: string
+                  enum: [on, off]
+      responses:
+        '200':
+          description: Auto-focus status updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /camera/manual_focus:
+    post:
+      tags:
+        - camera
+      summary: Set manual focus distance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                distance:
+                  type: number
+                  description: Focus distance in millimeters
+      responses:
+        '200':
+          description: Manual focus distance set successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /camera/exposure:
+    post:
+      tags:
+        - camera
+      summary: Set exposure time
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                exposure_time:
+                  type: number
+                  description: Exposure time in milliseconds
+      responses:
+        '200':
+          description: Exposure time set successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /camera/capture:
+    post:
+      tags:
+        - camera
+      summary: Capture raw image
+      responses:
+        '200':
+          description: Image captured successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  image_url:
+                    type: string
+                    description: URL to the captured image
+
+  /lights/blue/max_time:
+    post:
+      tags:
+        - lights
+      summary: Set blue light maximum on time for health safety
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                max_time:
+                  type: number
+                  description: Maximum time in seconds the blue light can stay on
+      responses:
+        '200':
+          description: Blue light maximum on time set successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
