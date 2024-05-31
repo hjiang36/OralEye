@@ -4,7 +4,7 @@ BIN_DIR=/usr/bin
 SRC_DIR=rpi
 APP_DIR=app
 API_SPEC=openapi.yaml
-FLASK_SERVER_DIR=rpi/api
+FLASK_SERVER_DIR=rpi/server
 ELECTRON_CLIENT_DIR=app/api
 
 SERVICES=$(wildcard $(SRC_DIR)/*.service)
