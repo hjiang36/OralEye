@@ -1,5 +1,6 @@
 # rpi/server/openapi_server/controllers/gpio_controller.py
 
+import time
 import RPi.GPIO as GPIO
 
 # GPIO pin setup
@@ -31,3 +32,23 @@ def get_light_status():
         "blue_led": "on" if GPIO.input(BLUE_LED_PIN) else "off",
         "red_laser": "on" if GPIO.input(RED_LASER_PIN) else "off"
     }
+
+# Add a main function to test the GPIO controller
+if __name__ == '__main__':
+    print(get_light_status())
+    
+    # Turn on the white LED
+    set_light_status(white_led='on', blue_led='off', red_laser='off')
+    print(get_light_status())
+    time.sleep(1)
+
+    set_light_status(white_led='off', blue_led='on', red_laser='off')
+    print(get_light_status())
+    time.sleep(1)
+
+    set_light_status(white_led='off', blue_led='off', red_laser='on')
+    print(get_light_status())
+    time.sleep(1)
+
+    set_light_status(white_led='off', blue_led='off', red_laser='off')
+    print(get_light_status())
