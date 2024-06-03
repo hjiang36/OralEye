@@ -26,13 +26,13 @@ paths:
                 properties:
                   white_led:
                     type: string
-                    enum: [on, off]
+                    enum: ["on", "off"]
                   blue_led:
                     type: string
-                    enum: [on, off]
+                    enum: ["on", "off"]
                   red_laser:
                     type: string
-                    enum: [on, off]
+                    enum: ["on", "off"]
 
   /lights/control:
     post:
@@ -48,13 +48,13 @@ paths:
               properties:
                 white_led:
                   type: string
-                  enum: [on, off]
+                  enum: ["on", "off"]
                 blue_led:
                   type: string
-                  enum: [on, off]
+                  enum: ["on", "off"]
                 red_laser:
                   type: string
-                  enum: [on, off]
+                  enum: ["on", "off"]
       responses:
         '200':
           description: Light statuses updated successfully

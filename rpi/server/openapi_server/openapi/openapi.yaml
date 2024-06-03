@@ -198,26 +198,26 @@ components:
       type: object
     _lights_status_get_200_response:
       example:
-        blue_led: "true"
-        white_led: "true"
-        red_laser: "true"
+        blue_led: "on"
+        white_led: "on"
+        red_laser: "on"
       properties:
         white_led:
           enum:
-          - "true"
-          - "false"
+          - "on"
+          - "off"
           title: white_led
           type: string
         blue_led:
           enum:
-          - "true"
-          - "false"
+          - "on"
+          - "off"
           title: blue_led
           type: string
         red_laser:
           enum:
-          - "true"
-          - "false"
+          - "on"
+          - "off"
           title: red_laser
           type: string
       title: _lights_status_get_200_response
