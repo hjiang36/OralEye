@@ -1,0 +1,254 @@
+openapi: 3.0.0
+info:
+  description: API for controlling lights and camera on OralEye device
+  title: OralEye API
+  version: 0.0.1
+servers:
+- url: /
+tags:
+- description: Endpoints for controlling lights
+  name: lights
+- description: Endpoints for controlling the camera
+  name: camera
+paths:
+  /camera/autofocus:
+    post:
+      operationId: camera_autofocus_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_camera_autofocus_post_request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_lights_control_post_200_response'
+          description: Auto-focus status updated successfully
+      summary: Set auto-focus on/off
+      tags:
+      - camera
+      x-openapi-router-controller: openapi_server.controllers.camera_controller
+  /camera/capture:
+    post:
+      operationId: camera_capture_post
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_camera_capture_post_200_response'
+          description: Image captured successfully
+      summary: Capture raw image
+      tags:
+      - camera
+      x-openapi-router-controller: openapi_server.controllers.camera_controller
+  /camera/exposure:
+    post:
+      operationId: camera_exposure_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_camera_exposure_post_request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_lights_control_post_200_response'
+          description: Exposure time set successfully
+      summary: Set exposure time
+      tags:
+      - camera
+      x-openapi-router-controller: openapi_server.controllers.camera_controller
+  /camera/manual_focus:
+    post:
+      operationId: camera_manual_focus_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_camera_manual_focus_post_request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_lights_control_post_200_response'
+          description: Manual focus distance set successfully
+      summary: Set manual focus distance
+      tags:
+      - camera
+      x-openapi-router-controller: openapi_server.controllers.camera_controller
+  /camera/preview/start:
+    post:
+      operationId: camera_preview_start_post
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_lights_control_post_200_response'
+          description: Camera preview started successfully
+      summary: Start camera preview
+      tags:
+      - camera
+      x-openapi-router-controller: openapi_server.controllers.camera_controller
+  /camera/preview/stop:
+    post:
+      operationId: camera_preview_stop_post
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_lights_control_post_200_response'
+          description: Camera preview stopped successfully
+      summary: Stop camera preview
+      tags:
+      - camera
+      x-openapi-router-controller: openapi_server.controllers.camera_controller
+  /lights/blue/max_time:
+    post:
+      operationId: lights_blue_max_time_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_lights_blue_max_time_post_request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_lights_control_post_200_response'
+          description: Blue light maximum on time set successfully
+      summary: Set blue light maximum on time for health safety
+      tags:
+      - lights
+      x-openapi-router-controller: openapi_server.controllers.lights_controller
+  /lights/control:
+    post:
+      operationId: lights_control_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_lights_status_get_200_response'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_lights_control_post_200_response'
+          description: Light statuses updated successfully
+      summary: Set lights on/off
+      tags:
+      - lights
+      x-openapi-router-controller: openapi_server.controllers.lights_controller
+  /lights/status:
+    get:
+      operationId: lights_status_get
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_lights_status_get_200_response'
+          description: Light statuses retrieved successfully
+      summary: Get status of the lights
+      tags:
+      - lights
+      x-openapi-router-controller: openapi_server.controllers.lights_controller
+components:
+  schemas:
+    _camera_autofocus_post_request:
+      properties:
+        autofocus:
+          enum:
+          - "true"
+          - "false"
+          title: autofocus
+          type: string
+      title: _camera_autofocus_post_request
+      type: object
+    _lights_control_post_200_response:
+      example:
+        message: message
+      properties:
+        message:
+          title: message
+          type: string
+      title: _lights_control_post_200_response
+      type: object
+    _camera_manual_focus_post_request:
+      properties:
+        distance:
+          description: Focus distance in millimeters
+          title: distance
+          type: number
+      title: _camera_manual_focus_post_request
+      type: object
+    _lights_status_get_200_response:
+      example:
+        blue_led: "true"
+        white_led: "true"
+        red_laser: "true"
+      properties:
+        white_led:
+          enum:
+          - "true"
+          - "false"
+          title: white_led
+          type: string
+        blue_led:
+          enum:
+          - "true"
+          - "false"
+          title: blue_led
+          type: string
+        red_laser:
+          enum:
+          - "true"
+          - "false"
+          title: red_laser
+          type: string
+      title: _lights_status_get_200_response
+      type: object
+    _camera_exposure_post_request:
+      properties:
+        exposure_time:
+          description: Exposure time in milliseconds
+          title: exposure_time
+          type: number
+      title: _camera_exposure_post_request
+      type: object
+    _camera_capture_post_200_response:
+      example:
+        image_url: image_url
+        message: message
+      properties:
+        message:
+          title: message
+          type: string
+        image_url:
+          description: URL to the captured image
+          title: image_url
+          type: string
+      title: _camera_capture_post_200_response
+      type: object
+    _lights_blue_max_time_post_request:
+      properties:
+        max_time:
+          description: Maximum time in seconds the blue light can stay on
+          title: max_time
+          type: number
+      title: _lights_blue_max_time_post_request
+      type: object
