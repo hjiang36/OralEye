@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const { exec } = require('child_process');
 const path = require('path');
+const bonjour = require('bonjour')();
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -34,6 +35,7 @@ function createWindow() {
   });
 
   mainWindow.loadFile('index.html');
+  return mainWindow;
 }
 
 // Get SSID
@@ -91,7 +93,6 @@ ipcMain.handle('get-ssid', async () => {
   return ssid;
 });
 
-app.whenReady().then(createWindow);
 app.commandLine.appendSwitch('enable-web-bluetooth', true);
 
 app.on('activate', () => {
@@ -100,4 +101,15 @@ app.on('activate', () => {
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
+});
+
+app.on('ready', () => {
+  const mainWindow = createWindow();
+
+  // Browse for all http services
+  bonjour.find({ type: 'http' }, function (service) {
+    console.log('Found an HTTP server:', service);
+    // Send the service information to the renderer process if needed
+    mainWindow.webContents.send('service-up', service);
+  });
 });

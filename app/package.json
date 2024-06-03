@@ -9,6 +9,7 @@
     "dist": "electron-builder"
   },
   "dependencies": {
+    "bonjour": "^3.5.0",
     "bootstrap": "^5.3.3",
     "http-server": "^14.1.1",
     "noble": "latest"
