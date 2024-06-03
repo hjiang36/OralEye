@@ -37,6 +37,11 @@ make api
 ```
 The corresponding code should be generated to be under `app/api` and `rpi/server` folder.
 
+To run the server code on Raspberry pi, install all depencies with `pip install -r requirements.txt` in `OralEye/rpi/server` folder.
+And run the server with `python -m openapi_server` to start the server. The server will be auto-started upon bootup. In development build, we can run this manually.
+
+Once the server is running, the SwaggerUI / API interface can be found at `<IP>:8080/ui`.
+
 ## Core Function Manual
 ### Discovery & Pairing
 The OralEye devices are configured to be discoverable through both Wifi and Bluetooth. Wifi discovery is done through mDNS protocol and used for discovery of devices that already on same local network with the host. Bluetooth discover is used for first time pairing, device setup and troubleshooting.
