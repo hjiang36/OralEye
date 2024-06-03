@@ -10,7 +10,7 @@ from openapi_server import util
 
 from openapi_server.controllers.lights_controller_impl import set_light_status, get_light_status
 
-def lights_blue_max_time_post(lights_blue_max_time_post_request):  # noqa: E501
+def lights_blue_max_time_post():  # noqa: E501
     """Set blue light maximum on time for health safety
 
      # noqa: E501
@@ -25,12 +25,8 @@ def lights_blue_max_time_post(lights_blue_max_time_post_request):  # noqa: E501
     return 'do some magic!'
 
 
-def lights_control_post(lights_status_get200_response):  # noqa: E501
+def lights_control_post():
     """Set lights on/off
-
-     # noqa: E501
-
-    :param lights_status_get200_response: 
     :type lights_status_get200_response: dict | bytes
 
     :rtype: Union[LightsControlPost200Response, Tuple[LightsControlPost200Response, int], Tuple[LightsControlPost200Response, int, Dict[str, str]]
