@@ -8,6 +8,9 @@ RED_LASER_PIN = 18
 BLUE_LED_PIN = 16
 WHITE_LED_PIN = 20
 
+# Disable GPIO in-use warnings
+GPIO.setwarnings(False)
+
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(RED_LASER_PIN, GPIO.OUT)
 GPIO.setup(WHITE_LED_PIN, GPIO.OUT)
