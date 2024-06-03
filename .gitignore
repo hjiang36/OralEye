@@ -2,9 +2,3 @@
 # If missing, use `make api` to generate them
 app/api
 openapitools.json
-rpi/server/*
-
-# Keep the impl code for controllers
-!rpi/server/openapi_server/
-rpi/server/openapi_server/*
-!rpi/server/openapi_server/controllers/
