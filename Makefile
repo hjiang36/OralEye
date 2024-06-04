@@ -14,7 +14,15 @@ SCRIPTS=$(wildcard $(SRC_DIR)/*.{sh,py})
 all: rpi-setup
 
 # Combined target to install services and scripts
-rpi-setup: install-services install-scripts
+rpi-setup: install-rpi-deps install-scripts install-services
+
+# Install deps on rpi
+install-rpi-deps:
+	@echo "Installing dependencies"
+	sudo apt install -y avahi-daemon avahi-discover libnss-mdns
+	@echo "Starting service"
+	sudo systemctl start avahi-daemon
+	sudo systemctl enable avahi-daemon
 
 # Install service files
 install-services: $(SERVICES)
