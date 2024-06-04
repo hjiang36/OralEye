@@ -3,6 +3,7 @@ let host_ssid = null; // Variable to store the SSID of the host
 let ssid = null; // Variable to store the SSID of wifi environment
 let ip = null; // Variable to store the IP address
 let gattServer = null; // Variable to store the GATT server
+let wifiDeviceList = []; // Variable to store the list of mDNS discovered devices
 
 // Get the SSID of the WiFi network
 document.addEventListener('DOMContentLoaded', async () => {
@@ -33,12 +34,41 @@ async function scanForBluetoothDevices() {
   }
 }
 
-window.api.onUpdateDeviceList((deviceList) => {
+// Listen for mDNS devices
+window.api.onUpdateWifiDeviceList((wifiDevice) => {
+  console.log('Received wifi device:', wifiDevice);
+  // Check if wifiDevice is in the wifiDeviceList
+  let found = false;
+  for (let i = 0; i < wifiDeviceList.length; i++) {
+    if (wifiDevice.name === wifiDeviceList[i].name && wifiDevice.ip === wifiDeviceList[i].ip) {
+      found = true;
+      break;
+    }
+  }
+  if (!found) {
+    // Add the wifiDevice to the wifiDeviceList
+    wifiDeviceList.push(wifiDevice);
+
+    // Add the wifiDevice to the wifiDeviceListElement
+    const wifiDeviceListElement = document.getElementById('wifi-device-list');
+    const listItem = document.createElement('li');
+    listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
+    listItem.innerHTML = `
+      <span>${wifiDevice.name}</span>
+      <button class="btn btn-success btn-sm float-right" data-device-ip="${wifiDevice.ip}">Select</button>
+    `;
+    wifiDeviceListElement.appendChild(listItem);
+  }
+
+
+});
+
+// Listen for the updated list of Bluetooth devices
+window.api.onUpdateBtDeviceList((deviceList) => {
   const deviceListElement = document.getElementById('device-list');
   deviceListElement.innerHTML = ''; // Clear the list
 
   deviceList.forEach(device => {
-    console.log('Adding Device:', device);
     const listItem = document.createElement('li');
     listItem.classList.add('list-group-item');
     listItem.innerHTML = `
@@ -58,7 +88,7 @@ window.api.onUpdateDeviceList((deviceList) => {
         console.log('Redirecting to preview window');
       } else if (selectedDeviceBtn.innerHTML === 'Check Status') {
         // Send the selected device to the main process
-        window.api.sendSelectedDevice(deviceId);
+        window.api.sendSelectedBtDevice(deviceId);
       } else if (selectedDeviceBtn.innerHTML === 'Setup') {
         // Get the host wifi info and share with the device
         window.api.getWiFiInfo().then(wifiInfo => {

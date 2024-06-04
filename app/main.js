@@ -108,8 +108,12 @@ app.on('ready', () => {
 
   // Browse for all http services
   bonjour.find({ type: 'http' }, function (service) {
-    console.log('Found an HTTP server:', service);
-    // Send the service information to the renderer process if needed
-    mainWindow.webContents.send('service-up', service);
+    if (service.name.startsWith('Oral')) {
+      console.log('Found service:', service.name);
+      console.log('Ip:', service.referer.address);
+      // Send the service information to the renderer process if needed
+      mainWindow.webContents.send('wifi-device-up', { name: service.name, ip: service.referer.address });
+    }
+    
   });
 });
