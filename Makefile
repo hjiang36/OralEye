@@ -20,6 +20,8 @@ rpi-setup: install-rpi-deps install-scripts install-services
 install-rpi-deps:
 	@echo "Installing dependencies"
 	sudo apt install -y avahi-daemon avahi-discover libnss-mdns
+	@echo 'Creating HTTP service definition file'
+	sudo sh -c 'echo "<?xml version=\"1.0\" standalone=\'no\'?>\n<!DOCTYPE service-group SYSTEM \"avahi-service.dtd\">\n<service-group>\n  <name replace-wildcards=\"yes\">%h</name>\n  <service>\n    <type>_http._tcp</type>\n    <port>80</port>\n  </service>\n</service-group>" > /etc/avahi/services/http.service'
 	@echo "Starting service"
 	sudo systemctl start avahi-daemon
 	sudo systemctl enable avahi-daemon
