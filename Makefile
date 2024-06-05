@@ -32,6 +32,10 @@ install-services: $(SERVICES)
 	@for service in $^; do \
 		sudo cp $$service $(SERVICE_DIR)/; \
 		echo "Copied $$service to $(SERVICE_DIR)/"; \
+		sudo systemctl enable $$(basename $$service); \
+		echo "Enabled service $$(basename $$service)"; \
+		sudo systemctl start $$(basename $$service); \
+		echo "Started service $$(basename $$service)"; \
 	done
 
 # Install and make scripts executable
