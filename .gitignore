@@ -2,3 +2,4 @@
 # If missing, use `make api` to generate them
 app/api
 openapitools.json
+package-lock.json
