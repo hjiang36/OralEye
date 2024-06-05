@@ -8,7 +8,9 @@ FLASK_SERVER_DIR=rpi/server
 ELECTRON_CLIENT_DIR=app/api
 
 SERVICES=$(wildcard $(SRC_DIR)/*.service)
-SCRIPTS=$(wildcard $(SRC_DIR)/*.{sh,py})
+SH_SCRIPTS=$(wildcard $(SRC_DIR)/*.sh)
+PY_SCRIPTS=$(wildcard $(SRC_DIR)/*.py)
+SCRIPTS=$(SH_SCRIPTS) $(PY_SCRIPTS)
 
 # Default target
 all: rpi-setup
