@@ -21,7 +21,7 @@ rpi-setup: install-rpi-deps install-scripts install-flask-server install-service
 # Install deps on rpi
 install-rpi-deps:
 	@echo "Installing dependencies"
-	sudo apt install -y avahi-daemon avahi-discover libnss-mdns
+	sudo apt install -y avahi-daemon avahi-discover libnss-mdns avahi-utils
 	@echo 'Creating HTTP service definition file'
 	sudo cp $(SRC_DIR)/avahi-http.xml /etc/avahi/services/avahi-http.service
 	@echo "Starting service"
