@@ -55,8 +55,18 @@ window.api.onUpdateWifiDeviceList((wifiDevice) => {
     listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
     listItem.innerHTML = `
       <span>${wifiDevice.name}</span>
-      <button class="btn btn-success btn-sm float-right" data-device-ip="${wifiDevice.ip}">Select</button>
+      <button class="btn btn-success btn-sm float-right wifi-select-btn" data-device-ip="${wifiDevice.ip}">Select</button>
     `;
+
+    // Add event listener for the button
+    listItem.querySelector('.wifi-select-btn').addEventListener('click', (event) => {
+      const deviceIp = event.target.getAttribute('data-device-ip');
+      console.log('Selected device IP:', deviceIp);
+
+      // For now just redirect to show the swagger page
+      window.location.href = `http://${deviceIp}:8080/ui`;
+    });
+
     wifiDeviceListElement.appendChild(listItem);
   }
 
