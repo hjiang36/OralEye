@@ -16,7 +16,7 @@ SCRIPTS=$(SH_SCRIPTS) $(PY_SCRIPTS)
 all: rpi-setup
 
 # Combined target to install services and scripts
-rpi-setup: install-rpi-deps install-scripts install-services
+rpi-setup: install-rpi-deps install-scripts install-flask-server install-services
 
 # Install deps on rpi
 install-rpi-deps:
@@ -27,6 +27,14 @@ install-rpi-deps:
 	@echo "Starting service"
 	sudo systemctl start avahi-daemon
 	sudo systemctl enable avahi-daemon
+	@echo "Install dependencies of the FLASK server"
+	sudo apt install -y python3 python3-pip
+	pip3 install -r $(FLASK_SERVER_DIR)/requirements.txt
+
+# Install flask server
+install-flask-server:
+	@echo "Installing Flask server..."
+	@pip install $(FLASK_SERVER_DIR)
 
 # Install service files
 install-services: $(SERVICES)
