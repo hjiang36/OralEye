@@ -146,7 +146,7 @@ function pairAndConnect(device) {
       //    Connected to SSID, IP: IPv4 IPv6
       // If the device is not connected, the return message will be
       //    Not connected
-      const wifiReady = false;
+      let wifiReady = false;
       if (wifiStatus.startsWith('Connected to')) {
         // Parse the SSID and IP address
         const match = wifiStatus.match(/Connected to (.+), IP: (.+)/);
