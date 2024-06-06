@@ -6,7 +6,8 @@ After=network.target
 [Service]
 ExecStart=/usr/bin/python3 -m openapi_server
 Restart=always
-User=pi
+User=admin
+Group=admin
 Environment=PYTHONUNBUFFERED=1
 
 [Install]
