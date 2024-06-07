@@ -3,6 +3,7 @@ const { exec } = require('child_process');
 const os = require('os');
 const path = require('path');
 const bonjour = require('bonjour')();
+var OralEyeApi = require('oral_eye_api');
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -186,6 +187,20 @@ app.on('ready', () => {
       console.log('Ip:', service.referer.address);
       // Send the service information to the renderer process if needed
       mainWindow.webContents.send('wifi-device-up', { name: service.name, ip: service.referer.address });
+
+      // Create the API client
+      var apiClient = new OralEyeApi.ApiClient(basePath="http://" + service.referer.address + ":8080");
+
+      // Get the device current light information
+      // TODO: this is placeholder code for testing. Move / expose this code through ipcMain to renderer in future.
+      var lightsApi = new OralEyeApi.LightsApi(apiClient);
+      lightsApi.lightsStatusGet((error, data, response) => {
+        if (error) {
+          console.error('Error:', error);
+        } else {
+          console.log('Data:', data);
+        }
+      });
     }
 
   });

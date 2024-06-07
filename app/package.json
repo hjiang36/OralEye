@@ -12,7 +12,8 @@
     "bonjour": "^3.5.0",
     "bootstrap": "^5.3.3",
     "http-server": "^14.1.1",
-    "noble": "latest"
+    "noble": "latest",
+    "oral_eye_api": "file:api"
   },
   "devDependencies": {
     "electron": "latest",
