@@ -8,7 +8,24 @@ let wifiDeviceList = []; // Variable to store the list of mDNS discovered device
 // Get the SSID of the WiFi network
 document.addEventListener('DOMContentLoaded', async () => {
   host_ssid = await window.api.getSSID();
+  const redirectButton = document.getElementById('redirect-btn');
+  const urlInput = document.getElementById('url-input');
+
+  redirectButton.addEventListener('click', () => {
+    let url = urlInput.value.trim();
+    if (url !== '') {
+      // Check if the URL includes a protocol
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        // If not, prepend 'http://' as the default protocol
+        url = 'http://' + url;
+      }
+      window.location.href = url;
+    } else {
+      alert('Please enter a valid URL');
+    }
+  });  
 });
+
 
 document.getElementById('bt-scan-btn').addEventListener('click', () => {
   // Change button text
