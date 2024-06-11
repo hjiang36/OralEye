@@ -29,8 +29,7 @@ def generate():
         frame = stream.getvalue()
         stream.truncate(0)
         stream.seek(0)
-        yield(b'--frame\r\nContent-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-        time.sleep(0.1)
+        yield(b'--frame\r\nContent-Type: image/jpeg\r\n\r\n' + frame + b'\r\n'
 
 @app.route('/video_feed')
 def video_feed():
