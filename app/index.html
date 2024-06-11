@@ -7,19 +7,25 @@
   <link href="node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-  <div class="container">
-    <h1 class="mt-5">OralEye Device List</h1>
-    <ul id="wifi-device-list" class="list-group mt-3"></ul>
-    <button id="bt-scan-btn" class="btn btn-primary mt-3">Add New device</button>
-    <ul id="device-list" class="list-group mt-3"></ul>
+    <div class="container">
+        <h1 class="mt-5">OralEye Device List</h1>
+        <ul id="wifi-device-list" class="list-group mt-3"></ul>
+        <button id="bt-scan-btn" class="btn btn-primary mt-3">Add New device</button>
+        <ul id="device-list" class="list-group mt-3"></ul>
 
-    <!-- New textbox and button -->
-    <div class="mt-3">
-      <input type="text" id="url-input" class="form-control" placeholder="Enter URL">
-      <button id="redirect-btn" class="btn btn-primary mt-2">Redirect</button>
+        <!-- New textbox and button -->
+        <div class="mt-3">
+            <input type="text" id="url-input" class="form-control" placeholder="Enter URL">
+            <button id="redirect-btn" class="btn btn-primary mt-2">Redirect</button>
+        </div>
     </div>
-  </div>
-  <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="./renderer.js"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="./renderer.js"></script>
+    <div class="mt-5">
+        <h2>Video Stream</h2>
+        <img id="video-stream" class="img-fluid" alt="Video Stream">
+    </div>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="./renderer.js"></script>
 </body>
 </html>
