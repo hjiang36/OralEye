@@ -17,5 +17,4 @@ contextBridge.exposeInMainWorld('api', {
   },
   getWiFiInfo: () => ipcRenderer.invoke('get-wifi-info'),
   getSSID: () => ipcRenderer.invoke('get-ssid'),
-  setVideoUrl: (callback) => ipcRenderer.on('set-video-url', callback)
 });

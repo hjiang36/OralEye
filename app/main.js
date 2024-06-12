@@ -35,10 +35,6 @@ function createWindow() {
       btCallback = null;
     }
   });
-    mainWindow.webContents.on('did-finish-load', () => {
-        const videoUrl = 'http://10.16.31.194:8000';  
-        mainWindow.webContents.send('set-video-url', videoUrl);
-    });
 
   mainWindow.loadFile('index.html');
     return mainWindow;

@@ -21,13 +21,5 @@
     </div>
     <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="./renderer.js"></script>
-        <h1>Raspberry Pi Camera</h1>
-        <video id="videoPlayer" width="640" height="480" controls autoplay></video>
-
-        <script>
-            window.electron.setVideoUrl((event, url) => {
-                document.getElementById('videoPlayer').src = url;
-            });
-        </script>
 </body>
 </html>
