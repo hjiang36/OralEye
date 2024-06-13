@@ -22,6 +22,7 @@
     <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="./renderer.js"></script>
     <h1>Raspberry Pi Camera Stream</h1>
+    <button id="fetch-ip">Fetch IP Address</button>
     <p id="ip-address">Fetching IP address...</p>
     <p id="stream-status">Checking stream status...</p>
     <img id="stream" style="display:none; width: 100%; max-width: 800px; height: auto;" src="" alt="Camera Stream">
@@ -44,6 +45,21 @@
         }).catch(err => {
             console.error('Error fetching IP address:', err);
             document.getElementById('ip-address').textContent = 'Error fetching IP address';
+        });
+        document.getElementById('fetch-ip').addEventListener('click', async () => {
+            document.getElementById('ip-address').textContent = 'Fetching IP address...';
+            try {
+                const ip = await window.electron.getIPAddress();
+                if (ip) {
+                    document.getElementById('ip-address').textContent = `IP Address: ${ip}`;
+                    checkStream(ip);
+                } else {
+                    document.getElementById('ip-address').textContent = 'No IP address found';
+                }
+            } catch (err) {
+                console.error('Error fetching IP address:', err);
+                document.getElementById('ip-address').textContent = 'Error fetching IP address';
+            }
         });
     </script>
 </body>
