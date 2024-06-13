@@ -23,11 +23,24 @@
     <script src="./renderer.js"></script>
     <h1>Raspberry Pi Camera Stream</h1>
     <p id="ip-address">Fetching IP address...</p>
-    <img id="stream" style="width: 100%; max-width: 800px; height: auto;" src="" alt="Camera Stream">
+    <p id="stream-status">Checking stream status...</p>
+    <img id="stream" style="display:none; width: 100%; max-width: 800px; height: auto;" src="" alt="Camera Stream">
     <script>
+        async function checkStream(ip) {
+            const url = `http://${ip}:8080`;
+            const streamAvailable = await window.electron.checkStream(url);
+            if (streamAvailable) {
+                document.getElementById('stream-status').textContent = 'Stream is available';
+                document.getElementById('stream').src = url;
+                document.getElementById('stream').style.display = 'block';
+            } else {
+                document.getElementById('stream-status').textContent = 'Stream is not available';
+            }
+        }
+
         window.electron.getIPAddress().then(ip => {
             document.getElementById('ip-address').textContent = `IP Address: ${ip}`;
-            document.getElementById('stream').src = `http://${ip}:8080`;
+            checkStream(ip);
         }).catch(err => {
             console.error('Error fetching IP address:', err);
             document.getElementById('ip-address').textContent = 'Error fetching IP address';
