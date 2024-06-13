@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>OralEye</title>
+  <link href="node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col">
+        <h1 class="mb-4">Camera Stream Test</h1>
+        <p id="source-ip" class="text-info"></p>
+        <div id="light-controls" class="mb-3 d-flex justify-content-around">
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" id="white-led-toggle">
+            <label class="form-check-label" for="white-led-toggle">White LED</label>
+          </div>
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" id="blue-led-toggle">
+            <label class="form-check-label" for="blue-led-toggle">Blue LED</label>
+          </div>
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" id="laser-toggle">
+            <label class="form-check-label" for="laser-toggle">Laser</label>
+          </div>
+        </div>
+        <img id="stream" class="img-fluid" style="display: none;" src="" alt="Camera Stream">
+      </div>
+    </div>
+  </div>
+
+  <script src="./streaming_test.js"></script>
+  <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

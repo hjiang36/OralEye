@@ -1,5 +1,3 @@
-const { ipcRenderer } = require('electron');
-
 let selectedDeviceBtn = null; // Variable to store the selected device
 let host_ssid = null; // Variable to store the SSID of the host
 let ssid = null; // Variable to store the SSID of wifi environment
@@ -11,26 +9,16 @@ let wifiDeviceList = []; // Variable to store the list of mDNS discovered device
 document.addEventListener('DOMContentLoaded', async () => {
   host_ssid = await window.api.getSSID();
   const redirectButton = document.getElementById('redirect-btn');
-  const urlInput = document.getElementById('url-input');
+  const urlInput = document.getElementById('rpi-ip-override');
 
-    redirectButton.addEventListener('click', () => {
-        let url = urlInput.value.trim();
-        if (url !== '') {
-            // Check if the URL includes a protocol
-            if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                // If not, prepend 'http://' as the default protocol
-                url = 'http://' + url;
-            }
-            window.location.href = url;
-        } else {
-            alert('Please enter a valid URL');
-        }
-    });
-      // Listen for the IPC message containing the video stream IP
-      ipcRenderer.on('video-stream-ip', (event, ip) => {
-          const videoStreamElement = document.getElementById('video-stream');
-          videoStreamElement.src = `http://${ip}:8000/video_feed`;
-  });  
+  redirectButton.addEventListener('click', () => {
+    let url = urlInput.value.trim();
+    if (url !== '') {
+      window.location.href = 'streaming_test.html?ip=' + url;
+    } else {
+      alert('Please enter a valid URL');
+    }
+  });
 });
 
 

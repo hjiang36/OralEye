@@ -18,5 +18,7 @@ contextBridge.exposeInMainWorld('api', {
   getWiFiInfo: () => ipcRenderer.invoke('get-wifi-info'),
   getSSID: () => ipcRenderer.invoke('get-ssid'),
   getIPAddress: () => ipcRenderer.invoke('get-ip-address'),
-  checkStream: (url) => ipcRenderer.invoke('check-stream', url)
+  checkStream: (url) => ipcRenderer.invoke('check-stream', url),
+  getLightStatus: (ip) => ipcRenderer.invoke('get-light-status', ip),
+  setLightStatus: (ip, lightStates) => ipcRenderer.send('set-light-status', ip, lightStates),
 });
