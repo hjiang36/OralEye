@@ -17,4 +17,5 @@ contextBridge.exposeInMainWorld('api', {
   },
   getWiFiInfo: () => ipcRenderer.invoke('get-wifi-info'),
   getSSID: () => ipcRenderer.invoke('get-ssid'),
+  getIPAddress: () => ipcRenderer.invoke('get-ip-address')
 });
