@@ -1,0 +1,13 @@
+[Unit]
+Description=Button Listener Service
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/button_listener.py
+Type=simple
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+
