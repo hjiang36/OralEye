@@ -1,0 +1,12 @@
+[Unit]
+Description=mJPEG service
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/mJPEG.py
+Type=simple
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
