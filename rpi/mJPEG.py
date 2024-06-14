@@ -1,4 +1,5 @@
 
+#!/usr/bin/python3
 from flask import Flask, Response
 from picamera2 import Picamera2
 from picamera2.encoders import JpegEncoder
