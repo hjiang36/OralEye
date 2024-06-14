@@ -6,7 +6,7 @@ import time
 BUTTON_WHITE_BLUE_PIN = 24
 BUTTON_RED_LASER_PIN = 25
 
-LIGHT_CONTROL_URL = "http://localhost:5000/api/lights"
+LIGHT_CONTROL_URL = "http://localhost:8080/lights/control"
 
 # State variables for lights
 white_blue_state = 0  # 0: off, 1: white, 2: blue
@@ -16,17 +16,17 @@ def rotate_white_blue():
     global white_blue_state
     white_blue_state = (white_blue_state + 1) % 3
     if white_blue_state == 0:
-        action = {"light": "white_blue", "state": "off"}
+        action = {"white_led": "off", "blue_led": "off"}
     elif white_blue_state == 1:
-        action = {"light": "white", "state": "on"}
+        action = {"white_led": "on", "blue_led": "off"}
     elif white_blue_state == 2:
-        action = {"light": "blue", "state": "on"}
+        action = {"white_led": "off", "blue_led": "on"}
     return action
 
 def toggle_red_laser():
     global red_laser_state
     red_laser_state = not red_laser_state
-    action = {"light": "red_laser", "state": "on" if red_laser_state else "off"}
+    action = {"red_laser": "on" if red_laser_state else "off"}
     return action
 
 def button_callback(channel):
