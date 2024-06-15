@@ -3,10 +3,10 @@ Description=mJPEG service
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/mJPEG.py
+ExecStart=/usr/bin/python3 /usr/bin/mJPEG.py
 Type=simple
-Restart=always
-RestartSec=3
+Restart=on-failure
+RestartSec=10
 
 [Install]
 WantedBy=multi-user.target
