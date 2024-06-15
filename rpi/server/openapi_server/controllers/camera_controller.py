@@ -10,6 +10,8 @@ from openapi_server.models.camera_manual_focus_post_request import CameraManualF
 from openapi_server.models.lights_control_post200_response import LightsControlPost200Response  # noqa: E501
 from openapi_server import util
 
+from openapi_server.controllers.camera_controller_impl import camera_preview_start_impl, camera_preview_stop_impl
+
 
 def camera_autofocus_post(camera_autofocus_post_request):  # noqa: E501
     """Set auto-focus on/off
@@ -75,7 +77,7 @@ def camera_preview_start_post():  # noqa: E501
 
     :rtype: Union[LightsControlPost200Response, Tuple[LightsControlPost200Response, int], Tuple[LightsControlPost200Response, int, Dict[str, str]]
     """
-    return 'do some magic!'
+    return camera_preview_start_impl()
 
 
 def camera_preview_stop_post():  # noqa: E501
@@ -86,4 +88,4 @@ def camera_preview_stop_post():  # noqa: E501
 
     :rtype: Union[LightsControlPost200Response, Tuple[LightsControlPost200Response, int], Tuple[LightsControlPost200Response, int, Dict[str, str]]
     """
-    return 'do some magic!'
+    return camera_preview_stop_impl()
