@@ -46,7 +46,7 @@ install-services: $(SERVICES)
 		echo "Enabled service $$(basename $$service)"; \
 		sudo systemctl start $$(basename $$service); \
 		echo "Started service $$(basename $$service)"; \
-	done \
+	done
 	sudo systemctl stop mJPEG.service;
 
 # Install and make scripts executable
