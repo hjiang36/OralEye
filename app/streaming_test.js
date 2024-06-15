@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (ip) {
         document.getElementById('source-ip').innerHTML = ip;
-        checkStream(ip);
+        // checkStream(ip);
     }
 
     try {
@@ -58,8 +58,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.api.setStreamingStatus(ip, streamStatus);
         
         // Wait and check the stream status again
-        setTimeout(() => {
-            checkStream(ip);
-        }, 1000);
+        if (streamStatus) {
+            const url = `http://${ip}:8000`;
+            document.getElementById('source-ip').innerHTML = ip + ", starting stream...";
+            setTimeout(() => {
+                document.getElementById('source-ip').innerHTML = ip;
+                document.getElementById('stream').src = url + '/video_feed' + '?ts=' + new Date().getTime();
+                document.getElementById('stream').style.display = 'block';
+            }, 3000);
+        } else {
+            // Hide the preview immediately
+            document.getElementById('stream').src = '';
+            document.getElementById('stream').style.display = 'none';
+        }
     });
 });
