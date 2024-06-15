@@ -51,4 +51,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('laser-toggle').addEventListener('click', () => {
         setLightStatus(ip);
     });
+
+    // Start / stop streaming
+    document.getElementById('streaming-toggle').addEventListener('click', () => {
+        const streamStatus = document.getElementById('streaming-toggle').checked;
+        window.api.setStreamingStatus(ip, streamStatus);
+        
+        // Wait and check the stream status again
+        setTimeout(() => {
+            checkStream(ip);
+        }, 1000);
+    });
 });
