@@ -39,6 +39,7 @@ The corresponding code should be generated to be under `app/api` and `rpi/server
 
 To run the server code on Raspberry pi, install all depencies with `pip install -r requirements.txt` in `OralEye/rpi/server` folder.
 And run the server with `python -m openapi_server` to start the server. The server will be auto-started upon bootup. In development build, we can run this manually.
+If code update is made to the `openapi_server`, it is recommended to re-run `pip install --force-reinstall .` from the `OralEye/rpi/server` folder to ensure the latest updates are taking effects.
 
 Once the server is running, the SwaggerUI / API interface can be found at `<IP>:8080/ui`.
 
