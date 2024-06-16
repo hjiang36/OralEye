@@ -40,6 +40,7 @@ def camera_preview_video_feed_get_impl():
 
 def camera_preview_start_impl():
     # Start the mjpeg server to start streaming
+    global camera_running
     if camera_running:
         return {'message': 'Camera preview is already running'}, 200
     with camera_lock:
@@ -50,6 +51,7 @@ def camera_preview_start_impl():
 
 def camera_preview_stop_impl():
     # Stop the mjpeg server to stop streaming
+    global camera_running
     if not camera_running:
         return {'message': 'Camera preview is not running'}, 200
     with camera_lock:
