@@ -113,6 +113,22 @@ paths:
       tags:
       - camera
       x-openapi-router-controller: openapi_server.controllers.camera_controller
+  /camera/preview/video_feed:
+    get:
+      description: Streams MJPEG video feed from the camera
+      operationId: camera_preview_video_feed_get
+      responses:
+        "200":
+          content:
+            multipart/x-mixed-replace:
+              schema:
+                format: binary
+                type: string
+          description: A stream of MJPEG images
+      summary: Get MJPEG video feed
+      tags:
+      - camera
+      x-openapi-router-controller: openapi_server.controllers.camera_controller
   /lights/blue/max_time:
     post:
       operationId: lights_blue_max_time_post
@@ -173,8 +189,8 @@ components:
       properties:
         autofocus:
           enum:
-          - "true"
-          - "false"
+          - "on"
+          - "off"
           title: autofocus
           type: string
       title: _camera_autofocus_post_request
@@ -225,7 +241,7 @@ components:
     _camera_exposure_post_request:
       properties:
         exposure_time:
-          description: Exposure time in milliseconds
+          description: Exposure time in microseconds
           title: exposure_time
           type: number
       title: _camera_exposure_post_request

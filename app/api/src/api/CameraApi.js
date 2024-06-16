@@ -269,5 +269,42 @@ export default class CameraApi {
       );
     }
 
+    /**
+     * Callback function to receive the result of the cameraPreviewVideoFeedGet operation.
+     * @callback module:api/CameraApi~cameraPreviewVideoFeedGetCallback
+     * @param {String} error Error message, if any.
+     * @param {File} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Get MJPEG video feed
+     * Streams MJPEG video feed from the camera
+     * @param {module:api/CameraApi~cameraPreviewVideoFeedGetCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link File}
+     */
+    cameraPreviewVideoFeedGet(callback) {
+      let postBody = null;
+
+      let pathParams = {
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = [];
+      let contentTypes = [];
+      let accepts = ['multipart/x-mixed-replace'];
+      let returnType = File;
+      return this.apiClient.callApi(
+        '/camera/preview/video_feed', 'GET',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null, callback
+      );
+    }
+
 
 }

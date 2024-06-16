@@ -90,16 +90,16 @@ CameraAutofocusPostRequest.prototype['autofocus'] = undefined;
 CameraAutofocusPostRequest['AutofocusEnum'] = {
 
     /**
-     * value: "true"
+     * value: "on"
      * @const
      */
-    "true": "true",
+    "on": "on",
 
     /**
-     * value: "false"
+     * value: "off"
      * @const
      */
-    "false": "false"
+    "off": "off"
 };
 
 

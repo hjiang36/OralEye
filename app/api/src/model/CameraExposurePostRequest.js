@@ -70,7 +70,7 @@ class CameraExposurePostRequest {
 
 
 /**
- * Exposure time in milliseconds
+ * Exposure time in microseconds
  * @member {Number} exposure_time
  */
 CameraExposurePostRequest.prototype['exposure_time'] = undefined;
