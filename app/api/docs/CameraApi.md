@@ -10,6 +10,7 @@ Method | HTTP request | Description
 [**cameraManualFocusPost**](CameraApi.md#cameraManualFocusPost) | **POST** /camera/manual_focus | Set manual focus distance
 [**cameraPreviewStartPost**](CameraApi.md#cameraPreviewStartPost) | **POST** /camera/preview/start | Start camera preview
 [**cameraPreviewStopPost**](CameraApi.md#cameraPreviewStopPost) | **POST** /camera/preview/stop | Stop camera preview
+[**cameraPreviewVideoFeedGet**](CameraApi.md#cameraPreviewVideoFeedGet) | **GET** /camera/preview/video_feed | Get MJPEG video feed
 
 
 
@@ -257,4 +258,45 @@ No authorization required
 
 - **Content-Type**: Not defined
 - **Accept**: application/json
+
+
+## cameraPreviewVideoFeedGet
+
+> File cameraPreviewVideoFeedGet()
+
+Get MJPEG video feed
+
+Streams MJPEG video feed from the camera
+
+### Example
+
+```javascript
+import OralEyeApi from 'oral_eye_api';
+
+let apiInstance = new OralEyeApi.CameraApi();
+apiInstance.cameraPreviewVideoFeedGet((error, data, response) => {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+});
+```
+
+### Parameters
+
+This endpoint does not need any parameter.
+
+### Return type
+
+**File**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: multipart/x-mixed-replace
 

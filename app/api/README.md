@@ -127,6 +127,7 @@ Class | Method | HTTP request | Description
 *OralEyeApi.CameraApi* | [**cameraManualFocusPost**](docs/CameraApi.md#cameraManualFocusPost) | **POST** /camera/manual_focus | Set manual focus distance
 *OralEyeApi.CameraApi* | [**cameraPreviewStartPost**](docs/CameraApi.md#cameraPreviewStartPost) | **POST** /camera/preview/start | Start camera preview
 *OralEyeApi.CameraApi* | [**cameraPreviewStopPost**](docs/CameraApi.md#cameraPreviewStopPost) | **POST** /camera/preview/stop | Stop camera preview
+*OralEyeApi.CameraApi* | [**cameraPreviewVideoFeedGet**](docs/CameraApi.md#cameraPreviewVideoFeedGet) | **GET** /camera/preview/video_feed | Get MJPEG video feed
 *OralEyeApi.LightsApi* | [**lightsBlueMaxTimePost**](docs/LightsApi.md#lightsBlueMaxTimePost) | **POST** /lights/blue/max_time | Set blue light maximum on time for health safety
 *OralEyeApi.LightsApi* | [**lightsControlPost**](docs/LightsApi.md#lightsControlPost) | **POST** /lights/control | Set lights on/off
 *OralEyeApi.LightsApi* | [**lightsStatusGet**](docs/LightsApi.md#lightsStatusGet) | **GET** /lights/status | Get status of the lights

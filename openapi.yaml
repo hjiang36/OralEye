@@ -97,6 +97,21 @@ paths:
                 properties:
                   message:
                     type: string
+  
+  /camera/preview/video_feed:
+    get:
+      tags:
+        - camera
+      summary: Get MJPEG video feed
+      description: Streams MJPEG video feed from the camera
+      responses:
+        '200':
+          description: A stream of MJPEG images
+          content:
+            multipart/x-mixed-replace:
+              schema:
+                type: string
+                format: binary
 
   /camera/autofocus:
     post:
