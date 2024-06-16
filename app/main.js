@@ -53,20 +53,7 @@ function getIPAddress() {
   }
   return null;
 }
-//Check if video streaming I think
-function checkStream(url) {
-  return new Promise((resolve, reject) => {
-    http.get(url, (res) => {
-      if (res.statusCode === 200) {
-        resolve(true);
-      } else {
-        resolve(false);
-      }
-    }).on('error', (e) => {
-      resolve(false);
-    });
-  });
-}
+
 // Get SSID for Mac
 function getSSIDMac() {
   return new Promise((resolve, reject) => {
@@ -186,9 +173,6 @@ ipcMain.handle('get-ip-address', async () => {
   return getIPAddress();
 });
 
-ipcMain.handle('check-stream', async (event, url) => {
-  return checkStream(url);
-});
 // Expose the get-wifi-info through IPC
 ipcMain.handle('get-wifi-info', async () => {
   const wifiInfo = await getWiFiInfo();

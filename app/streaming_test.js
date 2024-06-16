@@ -1,15 +1,3 @@
-async function checkStream(ip) {
-    const url = `http://${ip}:8000`;
-    const streamAvailable = await window.api.checkStream(url);
-    console.log('Stream available:', streamAvailable);
-    if (streamAvailable) {
-        document.getElementById('stream').src = url + '/video_feed';
-        document.getElementById('stream').style.display = 'block';
-    } else {
-        document.getElementById('stream').style.display = 'none';
-    }
-}
-
 function setLightStatus(ip) {
     const lightStatus = {
         white_led: document.getElementById('white-led-toggle').checked ? 'on' : 'off',
@@ -27,7 +15,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (ip) {
         document.getElementById('source-ip').innerHTML = ip;
-        // checkStream(ip);
+    } else {
+        document.getElementById('source-ip').innerHTML = 'No IP provided';
     }
 
     try {
@@ -55,17 +44,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Start / stop streaming
     document.getElementById('streaming-toggle').addEventListener('click', () => {
         const streamStatus = document.getElementById('streaming-toggle').checked;
-        window.api.setStreamingStatus(ip, streamStatus);
+        // window.api.setStreamingStatus(ip, streamStatus);
         
         // Wait and check the stream status again
         if (streamStatus) {
-            const url = `http://${ip}:8000`;
+            const url = `http://${ip}:8080/camera/preview/video_feed`;
             document.getElementById('source-ip').innerHTML = ip + ", starting stream...";
             setTimeout(() => {
                 document.getElementById('source-ip').innerHTML = ip;
-                document.getElementById('stream').src = url + '/video_feed' + '?ts=' + new Date().getTime();
+                document.getElementById('stream').src = url + '?ts=' + new Date().getTime();
                 document.getElementById('stream').style.display = 'block';
-            }, 3000);
+            }, 1000);
         } else {
             // Hide the preview immediately
             document.getElementById('stream').src = '';
