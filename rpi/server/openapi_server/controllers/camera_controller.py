@@ -20,7 +20,7 @@ from openapi_server.controllers.camera_controller_impl import (
 )
 
 
-def camera_autofocus_post(camera_autofocus_post_request=None):  # noqa: E501
+def camera_autofocus_post():  # noqa: E501
     """Set auto-focus on/off
 
      # noqa: E501
@@ -30,8 +30,7 @@ def camera_autofocus_post(camera_autofocus_post_request=None):  # noqa: E501
 
     :rtype: Union[LightsControlPost200Response, Tuple[LightsControlPost200Response, int], Tuple[LightsControlPost200Response, int, Dict[str, str]]
     """
-    if connexion.request.is_json:
-        camera_autofocus_post_request = CameraAutofocusPostRequest.from_dict(connexion.request.get_json())  # noqa: E501
+    camera_autofocus_post_request = CameraAutofocusPostRequest.from_dict(connexion.request.get_json())  # noqa: E501
     return camera_autofocus_post_impl(camera_autofocus_post_request.autofocus)
 
 
@@ -46,7 +45,7 @@ def camera_capture_post():  # noqa: E501
     return 'do some magic!'
 
 
-def camera_exposure_post(camera_exposure_post_request=None):  # noqa: E501
+def camera_exposure_post():  # noqa: E501
     """Set exposure time
 
      # noqa: E501
@@ -56,12 +55,11 @@ def camera_exposure_post(camera_exposure_post_request=None):  # noqa: E501
 
     :rtype: Union[LightsControlPost200Response, Tuple[LightsControlPost200Response, int], Tuple[LightsControlPost200Response, int, Dict[str, str]]
     """
-    if connexion.request.is_json:
-        camera_exposure_post_request = CameraExposurePostRequest.from_dict(connexion.request.get_json())  # noqa: E501
+    camera_exposure_post_request = CameraExposurePostRequest.from_dict(connexion.request.get_json())  # noqa: E501
     return camera_exposure_post_impl(camera_exposure_post_request.exposure_time)
 
 
-def camera_manual_focus_post(camera_manual_focus_post_request=None):  # noqa: E501
+def camera_manual_focus_post():  # noqa: E501
     """Set manual focus distance
 
      # noqa: E501
@@ -71,8 +69,7 @@ def camera_manual_focus_post(camera_manual_focus_post_request=None):  # noqa: E5
 
     :rtype: Union[LightsControlPost200Response, Tuple[LightsControlPost200Response, int], Tuple[LightsControlPost200Response, int, Dict[str, str]]
     """
-    if connexion.request.is_json:
-        camera_manual_focus_post_request = CameraManualFocusPostRequest.from_dict(connexion.request.get_json())  # noqa: E501
+    camera_manual_focus_post_request = CameraManualFocusPostRequest.from_dict(connexion.request.get_json())  # noqa: E501
     return camera_manual_focus_post_impl(camera_manual_focus_post_request.focus_distance)
 
 
