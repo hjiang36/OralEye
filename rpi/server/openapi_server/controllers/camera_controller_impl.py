@@ -3,6 +3,7 @@ from flask import Response
 from picamera2 import Picamera2
 from picamera2.encoders import JpegEncoder
 from picamera2.outputs import FileOutput
+from libcamera import controls
 
 import io
 import threading
@@ -58,4 +59,22 @@ def camera_preview_stop_impl():
         pi_camera.stop_encoder()
         pi_camera.stop()
         camera_running = False
+
+
+def camera_autofocus_post_impl(state: str):
+    if state == 'on':
+        pi_camera.set_controls({'AfMode': controls.AfModeEnum.Continuous})
+        return {'message': 'Auto-focus is set to on'}, 200
+    elif state == 'off':
+        pi_camera.set_controls({'AfMode': controls.AfModeEnum.Manual})
+        return {'message': 'Auto-focus is set to off'}, 200
     
+def camera_exposure_post_impl(exposure_time_us: int):
+    pi_camera.set_controls({'ExposureTime': exposure_time_us})
+    return {'message': 'Exposure time is set to {} us'.format(exposure_time_us)}, 200
+
+def camera_manual_focus_post_impl(focus_distance_mm: int):
+    # lens position is the diopters (reciprocal of focus distance)
+    lens_position = 1000.0 / focus_distance_mm
+    pi_camera.set_controls({'LensPosition': lens_position})
+    return {'message': 'Focus distance is set to {} mm'.format(focus_distance_mm)}, 200

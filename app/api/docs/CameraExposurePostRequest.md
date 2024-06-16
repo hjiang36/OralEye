@@ -4,6 +4,6 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**exposureTime** | **Number** | Exposure time in milliseconds | [optional] 
+**exposureTime** | **Number** | Exposure time in microseconds | [optional] 
 
 

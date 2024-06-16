@@ -57,7 +57,7 @@ class CameraAutofocusPostRequest(Model):
         :param autofocus: The autofocus of this CameraAutofocusPostRequest.
         :type autofocus: str
         """
-        allowed_values = ["true", "false"]  # noqa: E501
+        allowed_values = ["on", "off"]  # noqa: E501
         if autofocus not in allowed_values:
             raise ValueError(
                 "Invalid value for `autofocus` ({0}), must be one of {1}"

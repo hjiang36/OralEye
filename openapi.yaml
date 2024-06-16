@@ -127,7 +127,7 @@ paths:
               properties:
                 autofocus:
                   type: string
-                  enum: [on, off]
+                  enum: ["on", "off"]
       responses:
         '200':
           description: Auto-focus status updated successfully
@@ -179,7 +179,7 @@ paths:
               properties:
                 exposure_time:
                   type: number
-                  description: Exposure time in milliseconds
+                  description: Exposure time in microseconds
       responses:
         '200':
           description: Exposure time set successfully

@@ -11,9 +11,9 @@ Name | Type | Description | Notes
 ## Enum: AutofocusEnum
 
 
-* `true` (value: `"true"`)
+* `on` (value: `"on"`)
 
-* `false` (value: `"false"`)
+* `off` (value: `"off"`)
 
 
 

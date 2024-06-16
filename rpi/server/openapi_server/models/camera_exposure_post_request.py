@@ -43,7 +43,7 @@ class CameraExposurePostRequest(Model):
     def exposure_time(self) -> float:
         """Gets the exposure_time of this CameraExposurePostRequest.
 
-        Exposure time in milliseconds  # noqa: E501
+        Exposure time in microseconds  # noqa: E501
 
         :return: The exposure_time of this CameraExposurePostRequest.
         :rtype: float
@@ -54,7 +54,7 @@ class CameraExposurePostRequest(Model):
     def exposure_time(self, exposure_time: float):
         """Sets the exposure_time of this CameraExposurePostRequest.
 
-        Exposure time in milliseconds  # noqa: E501
+        Exposure time in microseconds  # noqa: E501
 
         :param exposure_time: The exposure_time of this CameraExposurePostRequest.
         :type exposure_time: float

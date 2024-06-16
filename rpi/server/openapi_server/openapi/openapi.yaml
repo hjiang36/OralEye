@@ -189,8 +189,8 @@ components:
       properties:
         autofocus:
           enum:
-          - "true"
-          - "false"
+          - "on"
+          - "off"
           title: autofocus
           type: string
       title: _camera_autofocus_post_request
@@ -241,7 +241,7 @@ components:
     _camera_exposure_post_request:
       properties:
         exposure_time:
-          description: Exposure time in milliseconds
+          description: Exposure time in microseconds
           title: exposure_time
           type: number
       title: _camera_exposure_post_request
