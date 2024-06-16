@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Start / stop streaming
     document.getElementById('streaming-toggle').addEventListener('click', () => {
         const streamStatus = document.getElementById('streaming-toggle').checked;
-        // window.api.setStreamingStatus(ip, streamStatus);
+        window.api.setStreamingStatus(ip, streamStatus);
         
         // Wait and check the stream status again
         if (streamStatus) {
@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 document.getElementById('source-ip').innerHTML = ip;
                 document.getElementById('stream').src = url + '?ts=' + new Date().getTime();
                 document.getElementById('stream').style.display = 'block';
-            }, 1000);
+            }, 200);
         } else {
             // Hide the preview immediately
             document.getElementById('stream').src = '';
