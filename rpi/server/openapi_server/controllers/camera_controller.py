@@ -20,7 +20,7 @@ from openapi_server.controllers.camera_controller_impl import (
 )
 
 
-def camera_autofocus_post(camera_autofocus_post_request):  # noqa: E501
+def camera_autofocus_post(camera_autofocus_post_request=None):  # noqa: E501
     """Set auto-focus on/off
 
      # noqa: E501
@@ -46,7 +46,7 @@ def camera_capture_post():  # noqa: E501
     return 'do some magic!'
 
 
-def camera_exposure_post(camera_exposure_post_request):  # noqa: E501
+def camera_exposure_post(camera_exposure_post_request=None):  # noqa: E501
     """Set exposure time
 
      # noqa: E501
@@ -61,7 +61,7 @@ def camera_exposure_post(camera_exposure_post_request):  # noqa: E501
     return camera_exposure_post_impl(camera_exposure_post_request.exposure_time)
 
 
-def camera_manual_focus_post(camera_manual_focus_post_request):  # noqa: E501
+def camera_manual_focus_post(camera_manual_focus_post_request=None):  # noqa: E501
     """Set manual focus distance
 
      # noqa: E501
