@@ -61,4 +61,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('stream').style.display = 'none';
         }
     });
+
+    // Capture image
+    document.getElementById('capture-button').addEventListener('click', async () => {
+        const outputPath = await window.api.captureRawImage(ip);
+        console.log('Captured image saved to:', outputPath);
+    });
 });

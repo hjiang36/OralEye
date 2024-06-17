@@ -1,6 +1,5 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const { exec } = require('child_process');
-const http = require('http');
 const os = require('os');
 const path = require('path');
 const bonjour = require('bonjour')();
@@ -251,6 +250,28 @@ ipcMain.on('set-streaming-status', (event, ip, status) => {
       });
     }
   });
+});
+
+ipcMain.handle('capture-raw-image', async (event, ip) => {
+  const outputPath = path.join(app.getPath('downloads'), 'capture.raw');
+  var apiClient = new OralEyeApi.ApiClient(basePath = "http://" + ip + ":8080");
+  var cameraApi = new OralEyeApi.CameraApi(apiClient);
+
+  try {
+      const response = await cameraApi.cameraCapturePost();
+      const writer = fs.createWriteStream(outputPath);
+
+      response.data.pipe(writer);
+
+      return new Promise((resolve, reject) => {
+          writer.on('finish', () => {
+              resolve(outputPath);
+          });
+          writer.on('error', reject);
+      });
+  } catch (error) {
+      throw new Error(`Failed to download file: ${error.message}`);
+  }
 });
 
 app.commandLine.appendSwitch('enable-web-bluetooth', true);
