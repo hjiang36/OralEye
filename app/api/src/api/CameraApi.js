@@ -14,7 +14,6 @@
 
 import ApiClient from "../ApiClient";
 import CameraAutofocusPostRequest from '../model/CameraAutofocusPostRequest';
-import CameraCapturePost200Response from '../model/CameraCapturePost200Response';
 import CameraExposurePostRequest from '../model/CameraExposurePostRequest';
 import CameraManualFocusPostRequest from '../model/CameraManualFocusPostRequest';
 import LightsControlPost200Response from '../model/LightsControlPost200Response';
@@ -83,14 +82,14 @@ export default class CameraApi {
      * Callback function to receive the result of the cameraCapturePost operation.
      * @callback module:api/CameraApi~cameraCapturePostCallback
      * @param {String} error Error message, if any.
-     * @param {module:model/CameraCapturePost200Response} data The data returned by the service call.
+     * @param {File} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
     /**
      * Capture raw image
      * @param {module:api/CameraApi~cameraCapturePostCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/CameraCapturePost200Response}
+     * data is of type: {@link File}
      */
     cameraCapturePost(callback) {
       let postBody = null;
@@ -106,8 +105,8 @@ export default class CameraApi {
 
       let authNames = [];
       let contentTypes = [];
-      let accepts = ['application/json'];
-      let returnType = CameraCapturePost200Response;
+      let accepts = ['application/octet-stream'];
+      let returnType = File;
       return this.apiClient.callApi(
         '/camera/capture', 'POST',
         pathParams, queryParams, headerParams, formParams, postBody,

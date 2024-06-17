@@ -59,7 +59,7 @@ No authorization required
 
 ## cameraCapturePost
 
-> CameraCapturePost200Response cameraCapturePost()
+> File cameraCapturePost()
 
 Capture raw image
 
@@ -84,7 +84,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**CameraCapturePost200Response**](CameraCapturePost200Response.md)
+**File**
 
 ### Authorization
 
@@ -93,7 +93,7 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: application/octet-stream
 
 
 ## cameraExposurePost

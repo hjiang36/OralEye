@@ -258,19 +258,20 @@ ipcMain.handle('capture-raw-image', async (event, ip) => {
   var cameraApi = new OralEyeApi.CameraApi(apiClient);
 
   try {
-      const response = await cameraApi.cameraCapturePost();
-      const writer = fs.createWriteStream(outputPath);
+    const response = await cameraApi.cameraCapturePost();
 
-      response.data.pipe(writer);
+    // Directly pipe the response to the file stream
+    const writer = fs.createWriteStream(outputPath);
+    response.data.pipe(writer);
 
-      return new Promise((resolve, reject) => {
-          writer.on('finish', () => {
-              resolve(outputPath);
-          });
-          writer.on('error', reject);
+    return new Promise((resolve, reject) => {
+      writer.on('finish', () => {
+        resolve(outputPath);
       });
+      writer.on('error', reject);
+    });
   } catch (error) {
-      throw new Error(`Failed to download file: ${error.message}`);
+    throw new Error(`Failed to download file: ${error.message}`);
   }
 });
 

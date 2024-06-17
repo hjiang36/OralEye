@@ -14,7 +14,6 @@
 
 import ApiClient from './ApiClient';
 import CameraAutofocusPostRequest from './model/CameraAutofocusPostRequest';
-import CameraCapturePost200Response from './model/CameraCapturePost200Response';
 import CameraExposurePostRequest from './model/CameraExposurePostRequest';
 import CameraManualFocusPostRequest from './model/CameraManualFocusPostRequest';
 import LightsBlueMaxTimePostRequest from './model/LightsBlueMaxTimePostRequest';
@@ -67,12 +66,6 @@ export {
      * @property {module:model/CameraAutofocusPostRequest}
      */
     CameraAutofocusPostRequest,
-
-    /**
-     * The CameraCapturePost200Response model constructor.
-     * @property {module:model/CameraCapturePost200Response}
-     */
-    CameraCapturePost200Response,
 
     /**
      * The CameraExposurePostRequest model constructor.

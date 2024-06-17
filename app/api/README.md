@@ -136,7 +136,6 @@ Class | Method | HTTP request | Description
 ## Documentation for Models
 
  - [OralEyeApi.CameraAutofocusPostRequest](docs/CameraAutofocusPostRequest.md)
- - [OralEyeApi.CameraCapturePost200Response](docs/CameraCapturePost200Response.md)
  - [OralEyeApi.CameraExposurePostRequest](docs/CameraExposurePostRequest.md)
  - [OralEyeApi.CameraManualFocusPostRequest](docs/CameraManualFocusPostRequest.md)
  - [OralEyeApi.LightsBlueMaxTimePostRequest](docs/LightsBlueMaxTimePostRequest.md)
