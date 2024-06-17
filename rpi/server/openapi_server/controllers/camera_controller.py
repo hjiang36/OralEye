@@ -17,6 +17,7 @@ from openapi_server.controllers.camera_controller_impl import (
     camera_autofocus_post_impl,
     camera_exposure_post_impl,
     camera_manual_focus_post_impl,
+    camera_capture_post_impl,
 )
 
 
@@ -42,7 +43,7 @@ def camera_capture_post():  # noqa: E501
 
     :rtype: Union[CameraCapturePost200Response, Tuple[CameraCapturePost200Response, int], Tuple[CameraCapturePost200Response, int, Dict[str, str]]
     """
-    return 'do some magic!'
+    return camera_capture_post_impl()
 
 
 def camera_exposure_post():  # noqa: E501

@@ -1,5 +1,5 @@
 import subprocess
-from flask import Response
+from flask import Response, send_file
 from picamera2 import Picamera2
 from picamera2.encoders import JpegEncoder
 from picamera2.outputs import FileOutput
@@ -9,7 +9,18 @@ import io
 import threading
 
 pi_camera = Picamera2()
-pi_camera.configure(pi_camera.create_video_configuration(main={"format": "RGB888", "size": (640, 480)}))
+
+# Configuration for still capture with raw resolution
+raw_resolution = (4056, 3040)
+still_config = pi_camera.create_still_configuration(raw={"size": raw_resolution})
+
+# Configuration for video streaming
+video_config = pi_camera.create_video_configuration(main={"format": "RGB888", "size": (640, 480)})
+
+# Configure as video as starting point
+pi_camera.configure(video_config)
+
+# Create encoder and output for video streaming
 encoder = JpegEncoder(q=80)
 stream = io.BytesIO()
 output = FileOutput(stream)
@@ -78,3 +89,21 @@ def camera_manual_focus_post_impl(focus_distance_mm: int):
     lens_position = 1000.0 / focus_distance_mm
     pi_camera.set_controls({'LensPosition': lens_position})
     return {'message': 'Focus distance is set to {} mm'.format(focus_distance_mm)}, 200
+
+def capture_raw_bayer():
+    with camera_lock:
+        pi_camera.stop_encoder()  # Stop video encoder
+        pi_camera.configure(still_config)  # Switch to still configuration
+        raw_stream = io.BytesIO()
+        pi_camera.capture_file(stream, format='raw')
+        raw_stream.seek(0)
+        pi_camera.configure(video_config)  # Switch back to video configuration
+        pi_camera.start_encoder(encoder, output)  # Restart video encoder
+        return raw_stream
+
+def camera_capture_post_impl():
+    try:
+        raw_stream = capture_raw_bayer()
+        return send_file(raw_stream, mimetype='application/octet-stream', as_attachment=True, attachment_filename='capture.raw')
+    except Exception as e:
+        return {'error': str(e)}, 500
