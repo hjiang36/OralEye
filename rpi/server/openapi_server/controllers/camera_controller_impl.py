@@ -93,12 +93,17 @@ def camera_manual_focus_post_impl(focus_distance_mm: int):
 def capture_raw_bayer():
     with camera_lock:
         pi_camera.stop_encoder()  # Stop video encoder
+        pi_camera.stop()
         pi_camera.configure(still_config)  # Switch to still configuration
         raw_stream = io.BytesIO()
         pi_camera.capture_file(stream, format='raw')
         raw_stream.seek(0)
         pi_camera.configure(video_config)  # Switch back to video configuration
-        pi_camera.start_encoder(encoder, output)  # Restart video encoder
+         # If camera was running, restart it
+        if camera_running:
+            pi_camera.start()
+            pi_camera.start_encoder(encoder, output)  # Restart video encoder
+
         return raw_stream
 
 def camera_capture_post_impl():
