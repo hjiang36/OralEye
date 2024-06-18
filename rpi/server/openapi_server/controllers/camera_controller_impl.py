@@ -1,3 +1,4 @@
+from cgi import print_exception
 import subprocess
 from flask import Response
 from picamera2 import Picamera2
@@ -34,6 +35,7 @@ def camera_preview_video_feed_get_impl():
     # Check if the camera is running
     with camera_lock:
         if not camera_running:
+            print("camera_preview_video_feed_get_impl not running")
             # TOOD: we may convert this to return an error image instead of 404
             return {'message': 'Camera preview is not running'}, 404
     return Response(generate(),
@@ -49,6 +51,7 @@ def camera_preview_start_impl():
         pi_camera.start()
         pi_camera.start_encoder(encoder, output)
         camera_running = True
+        print("camera running equals true")
 
 
 def camera_preview_stop_impl():
