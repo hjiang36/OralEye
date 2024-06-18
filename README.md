@@ -4,7 +4,7 @@ OralEye prototype software using Raspberry Pi device
 This repository contains code for both device side (under [rpi](https://github.com/hjiang36/OralEye/tree/main/rpi) folder) and host side (under [app](https://github.com/hjiang36/OralEye/tree/main/app) folder) control software.
 
 ## Getting Started
-This device describes how to setup host and device environmnet for developers. Users are strongly recommended to use pre-built relaese binaries (link to be added).
+This device describes how to setup host and device environmnet for developers. Users are strongly recommended to use pre-built release binaries (link to be added).
 
 ### Device Setup
 The device should be configured properly and no special setup steps required. The following steps would only be needed if started with vanilla raspberry pi system.
@@ -52,6 +52,7 @@ The OralEye devices are configured to be discoverable through both Wifi and Blue
 
 
 ### Streaming
+The OralEye camera streams to the address `<IP>:8000'. The electron app also hosts the streaming video when the camera is running. You can start and stop the streaming in the electron app. 
 
 ### Camera Control
 
