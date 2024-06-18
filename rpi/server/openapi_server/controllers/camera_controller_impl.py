@@ -1,4 +1,3 @@
-import subprocess
 from flask import Response, send_file
 from picamera2 import Picamera2
 from picamera2.encoders import JpegEncoder
@@ -6,6 +5,7 @@ from picamera2.outputs import FileOutput
 from libcamera import controls
 
 import io
+import numpy as np
 import threading
 
 pi_camera = Picamera2()
@@ -98,8 +98,8 @@ def capture_raw_bayer():
         pi_camera.configure(still_config)  # Switch to still configuration
         raw_stream = io.BytesIO()
         pi_camera.start()
-        pi_camera.capture_file(stream, format='raw')
-        raw_stream.seek(0)
+        raw_buffer = pi_camera.capture_array('raw')
+        np.save(raw_stream, raw_buffer)
         pi_camera.stop()
         pi_camera.configure(video_config)  # Switch back to video configuration
          # If camera was running, restart it
