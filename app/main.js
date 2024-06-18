@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const { exec } = require('child_process');
 const os = require('os');
 const path = require('path');
+const fs = require('fs');
 const bonjour = require('bonjour')();
 var OralEyeApi = require('oral_eye_api');
 
@@ -252,27 +253,28 @@ ipcMain.on('set-streaming-status', (event, ip, status) => {
   });
 });
 
-ipcMain.handle('capture-raw-image', async (event, ip) => {
+ipcMain.handle('capture-raw-image', (event, ip) => {
   const outputPath = path.join(app.getPath('downloads'), 'capture.raw');
+  const writer = fs.createWriteStream(outputPath);
   var apiClient = new OralEyeApi.ApiClient(basePath = "http://" + ip + ":8080");
   var cameraApi = new OralEyeApi.CameraApi(apiClient);
 
-  try {
-    const response = await cameraApi.cameraCapturePost();
-
-    // Directly pipe the response to the file stream
-    const writer = fs.createWriteStream(outputPath);
-    response.data.pipe(writer);
-
-    return new Promise((resolve, reject) => {
-      writer.on('finish', () => {
-        resolve(outputPath);
-      });
-      writer.on('error', reject);
+  cameraApi.cameraCapturePost((error, data, response) => {
+    if (error) {
+      console.error('Error:', error);
+      writer.close();
+      return;
+    }
+    console.log('Data:', data);
+    data.pipe(writer);
+    writer.on('error', err => {
+      writer.close();
+      console.log('Error writing file:', err);
     });
-  } catch (error) {
-    throw new Error(`Failed to download file: ${error.message}`);
-  }
+    writer.on('close', () => {
+      console.log('File written:', outputPath);
+    });
+  });
 });
 
 app.commandLine.appendSwitch('enable-web-bluetooth', true);

@@ -11,7 +11,7 @@ import threading
 pi_camera = Picamera2()
 
 # Configuration for still capture with raw resolution
-raw_resolution = (4056, 3040)
+raw_resolution = (4608, 2592)
 still_config = pi_camera.create_still_configuration(raw={"size": raw_resolution})
 
 # Configuration for video streaming
@@ -96,8 +96,10 @@ def capture_raw_bayer():
         pi_camera.stop()
         pi_camera.configure(still_config)  # Switch to still configuration
         raw_stream = io.BytesIO()
+        pi_camera.start()
         pi_camera.capture_file(stream, format='raw')
         raw_stream.seek(0)
+        pi_camera.stop()
         pi_camera.configure(video_config)  # Switch back to video configuration
          # If camera was running, restart it
         if camera_running:
