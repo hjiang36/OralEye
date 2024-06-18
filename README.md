@@ -59,4 +59,12 @@ The OralEye camera streams to the address `<IP>:8000'. The electron app also hos
 ### Capture
 
 ## Troubleshoot
-
+If openapi related functionalities (e.g. camera controls, lights controls) are not working as expected, host (PC / Mac) side of logs can be found by in inspection panel (option+command+I on mac in electron window).
+To check the raspberry pi openapi server side log, run following command in rapberry pi terminal
+```sh
+sudo systemctl status openapi_server.service
+```
+Some more logs may be found by running
+```sh
+sudo journalctl -u openapi_server.service
+```
