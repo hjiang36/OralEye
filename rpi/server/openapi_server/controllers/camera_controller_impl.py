@@ -100,6 +100,7 @@ def capture_raw_bayer():
         pi_camera.start()
         raw_buffer = pi_camera.capture_array('raw')
         np.save(raw_stream, raw_buffer)
+        raw_stream.seek(0)
         pi_camera.stop()
         pi_camera.configure(video_config)  # Switch back to video configuration
          # If camera was running, restart it

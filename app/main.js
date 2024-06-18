@@ -253,28 +253,46 @@ ipcMain.on('set-streaming-status', (event, ip, status) => {
   });
 });
 
-ipcMain.handle('capture-raw-image', (event, ip) => {
+ipcMain.handle('capture-raw-image', async (event, ip) => {
   const outputPath = path.join(app.getPath('downloads'), 'capture.raw');
-  const writer = fs.createWriteStream(outputPath);
   var apiClient = new OralEyeApi.ApiClient(basePath = "http://" + ip + ":8080");
   var cameraApi = new OralEyeApi.CameraApi(apiClient);
 
-  cameraApi.cameraCapturePost((error, data, response) => {
-    if (error) {
-      console.error('Error:', error);
-      writer.close();
-      return;
-    }
-    console.log('Data:', data);
-    data.pipe(writer);
-    writer.on('error', err => {
-      writer.close();
-      console.log('Error writing file:', err);
+  try {
+    const chunks = []; 
+    cameraApi.cameraCapturePost((error, data, response) => {
+      if (error) {
+        console.error('Error:', error);
+        throw new Error(`Failed to capture image: ${error.message}`);
+      }
+      
+      response.on('data', (chunk) => {
+        console.log('Received data chunk');
+        chunks.push(chunk);
+      });
+  
+      response.on('error', (error) => {
+        console.error('Error:', error);
+      });
+  
+      return new Promise((resolve, reject) => {
+        response.on('end', () => {
+          console.log('Image download complete');
+          const buffer = Buffer.concat(chunks);
+          fs.writeFile(outputPath, buffer, (err) => {
+            if (err) {
+              reject(err);
+            } else {
+              console.log('Image saved to:', outputPath);
+              resolve(outputPath);
+            }
+          });
+        });
+      });
     });
-    writer.on('close', () => {
-      console.log('File written:', outputPath);
-    });
-  });
+  } catch (error) {
+    throw new Error(`Failed to download file: ${error.message}`);
+  }
 });
 
 app.commandLine.appendSwitch('enable-web-bluetooth', true);
