@@ -32,9 +32,10 @@ def generate():
 
 def camera_preview_video_feed_get_impl():
     # Check if the camera is running
-    if not camera_running:
-        # TOOD: we may convert this to return an error image instead of 404
-        return {'message': 'Camera preview is not running'}, 404
+    with camera_lock:
+        if not camera_running:
+            # TOOD: we may convert this to return an error image instead of 404
+            return {'message': 'Camera preview is not running'}, 404
     return Response(generate(),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
