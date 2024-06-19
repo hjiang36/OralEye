@@ -271,22 +271,22 @@ async function generateThumbnail(fileData) {
   const scaleY = rawHeight / thumbnailHeight;
 
   for (let y = 0; y < thumbnailHeight; y++) {
-      for (let x = 0; x < thumbnailWidth; x++) {
-        // Find the original pixel coordinates of RGGB
-        const origX = Math.floor(x * scaleX / 2) * 2;
-        const origY = Math.floor(y * scaleY / 2) * 2;
+    for (let x = 0; x < thumbnailWidth; x++) {
+      // Find the original pixel coordinates of RGGB
+      const origX = Math.floor(x * scaleX / 2) * 2;
+      const origY = Math.floor(y * scaleY / 2) * 2;
 
-        // Compute RGB value, we only keep the highest 8 bits
-        // Pattern here is hardcoded as BGGR
-        const xIndex = Math.floor(origX * 5 / 4) + (origX % 4);
-        const r = fileData[(origY + 1) * rawStride +  xIndex + 1];
-        const g = (
-          fileData[origY * rawStride + xIndex + 1] / 2 + 
-          fileData[(origY + 1) * rawStride + xIndex] / 2);
-        const b = fileData[origY * rawStride + xIndex];
-        const color = Jimp.rgbaToInt(r, g, b, 255);
-        image.setPixelColor(color, x, y);
-      }
+      // Compute RGB value, we only keep the highest 8 bits
+      // Pattern here is hardcoded as BGGR
+      const xIndex = Math.floor(origX * 5 / 4) + (origX % 4);
+      const r = fileData[(origY + 1) * rawStride + xIndex + 1];
+      const g = (
+        fileData[origY * rawStride + xIndex + 1] / 2 +
+        fileData[(origY + 1) * rawStride + xIndex] / 2);
+      const b = fileData[origY * rawStride + xIndex];
+      const color = Jimp.rgbaToInt(r, g, b, 255);
+      image.setPixelColor(color, x, y);
+    }
   }
 
   // Save thumbnail as a PNG file
@@ -311,39 +311,40 @@ ipcMain.handle('capture-raw-image', async (event, ip) => {
 
   try {
     const chunks = [];
-    const result = await new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       cameraApi.cameraCapturePost((error, data, response) => {
         if (error) {
-          reject(error);
-        } else {
-          resolve(response);
+          return reject(error);
         }
-      });
-    });
-    let totalBytesReceived = 0;
-    result.on('data', (chunk) => {
-      chunks.push(chunk);
-      totalBytesReceived += chunk.length;
-      console.log('Received:', totalBytesReceived);
-    });
-  
-    result.on('error', (error) => {
-      console.error('Error:', error);
-    });
-  
-    return new Promise((resolve, reject) => {
-      result.on('end', () => {
-        const buffer = Buffer.concat(chunks);
-        console.log('Buffer:', buffer.length);
-        fs.writeFile(outputPath, buffer, (err) => {
-          if (err) {
-            reject(err);
-          } else {
-            // Generate thumbnail
-            const thumbnailPath = generateThumbnail(buffer);
-            console.log('Thumbnail path:', thumbnailPath);
-            resolve(thumbnailPath);
-          }
+
+        // Ensure response is a readable stream
+        if (!response || typeof response.on !== 'function') {
+          return reject(new Error('Invalid response stream from API call'));
+        }
+
+        // Attach listeners immediately
+        response.on('data', (chunk) => {
+          chunks.push(chunk);
+        });
+
+        response.on('end', () => {
+          const buffer = Buffer.concat(chunks);
+          console.log('Buffer:', buffer.length);
+          fs.writeFile(outputPath, buffer, (err) => {
+            if (err) {
+              reject(err);
+            } else {
+              // Generate thumbnail
+              const thumbnailPath = generateThumbnail(buffer);
+              console.log('Thumbnail path:', thumbnailPath);
+              resolve(thumbnailPath);
+            }
+          });
+
+          response.on('error', (error) => {
+            console.error('Stream error:', error);
+            reject(error);
+          });
         });
       });
     });
