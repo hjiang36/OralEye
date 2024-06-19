@@ -113,7 +113,7 @@ def capture_raw_bayer():
 def camera_capture_post_impl():
     try:
         raw_stream = capture_raw_bayer()
-        print('Raw capture done, sending the file now')
+        print('Raw capture done, sending the file of size: ', raw_stream.getbuffer().nbytes)
         return send_file(raw_stream, mimetype='application/octet-stream', as_attachment=True, attachment_filename='capture.raw')
     except Exception as e:
         return {'error': str(e)}, 500

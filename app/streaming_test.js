@@ -64,12 +64,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Capture image
     document.getElementById('capture-button').addEventListener('click', async () => {
-        const outputPath = await window.api.captureRawImage(ip);
-        console.log('Captured image:', outputPath);
-        if (!outputPath) {
+        const thumbnailPath  = await window.api.captureRawImage(ip);
+        console.log('Captured image:', thumbnailPath);
+        if (!thumbnailPath) {
             document.getElementById('capture-info').innerHTML = "Failed to capture image";
+            document.getElementById('capture-thumbnail').style.display = 'none';
         } else {
-            document.getElementById('capture-info').innerHTML = "Saved to: " + outputPath;
+            document.getElementById('capture-info').innerHTML = "Saved to: " + thumbnailPath;
+            document.getElementById('capture-thumbnail').src = thumbnailPath;
+            document.getElementById('capture-thumbnail').style.display = 'block';
         }
     });
 });
