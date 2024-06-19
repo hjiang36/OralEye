@@ -65,6 +65,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Capture image
     document.getElementById('capture-button').addEventListener('click', async () => {
         const outputPath = await window.api.captureRawImage(ip);
-        console.log('Captured image saved to:', outputPath);
+        console.log('Captured image:', outputPath);
+        if (!outputPath) {
+            document.getElementById('capture-info').innerHTML = "Failed to capture image";
+        } else {
+            document.getElementById('capture-info').innerHTML = "Saved to: " + outputPath;
+        }
     });
 });

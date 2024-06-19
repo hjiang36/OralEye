@@ -259,34 +259,34 @@ ipcMain.handle('capture-raw-image', async (event, ip) => {
   var cameraApi = new OralEyeApi.CameraApi(apiClient);
 
   try {
-    const chunks = []; 
-    cameraApi.cameraCapturePost((error, data, response) => {
-      if (error) {
-        console.error('Error:', error);
-        throw new Error(`Failed to capture image: ${error.message}`);
-      }
-      
-      response.on('data', (chunk) => {
-        console.log('Received data chunk');
-        chunks.push(chunk);
+    const chunks = [];
+    const result = await new Promise((resolve, reject) => {
+      cameraApi.cameraCapturePost((error, data, response) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(response);
+        }
       });
+    });
+    result.on('data', (chunk) => {
+      chunks.push(chunk);
+    });
   
-      response.on('error', (error) => {
-        console.error('Error:', error);
-      });
+    result.on('error', (error) => {
+      console.error('Error:', error);
+    });
   
-      return new Promise((resolve, reject) => {
-        response.on('end', () => {
-          console.log('Image download complete');
-          const buffer = Buffer.concat(chunks);
-          fs.writeFile(outputPath, buffer, (err) => {
-            if (err) {
-              reject(err);
-            } else {
-              console.log('Image saved to:', outputPath);
-              resolve(outputPath);
-            }
-          });
+    return new Promise((resolve, reject) => {
+      result.on('end', () => {
+        const buffer = Buffer.concat(chunks);
+        fs.writeFile(outputPath, buffer, (err) => {
+          if (err) {
+            reject(err);
+          } else {
+            console.log('Image saved to:', outputPath);
+            resolve(outputPath);
+          }
         });
       });
     });
