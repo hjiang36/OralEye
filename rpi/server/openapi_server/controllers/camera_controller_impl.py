@@ -96,10 +96,10 @@ def capture_raw_bayer():
         pi_camera.stop_encoder()  # Stop video encoder
         pi_camera.stop()
         pi_camera.configure(still_config)  # Switch to still configuration
-        raw_stream = io.BytesIO()
         pi_camera.start()
         raw_buffer = pi_camera.capture_array('raw')
-        np.save(raw_stream, raw_buffer)
+        raw_bytes = raw_buffer.tobytes()
+        raw_stream = io.BytesIO(raw_bytes)
         raw_stream.seek(0)
         pi_camera.stop()
         pi_camera.configure(video_config)  # Switch back to video configuration

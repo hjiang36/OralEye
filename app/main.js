@@ -320,8 +320,11 @@ ipcMain.handle('capture-raw-image', async (event, ip) => {
         }
       });
     });
+    let totalBytesReceived = 0;
     result.on('data', (chunk) => {
       chunks.push(chunk);
+      totalBytesReceived += chunk.length;
+      console.log('Received:', totalBytesReceived);
     });
   
     result.on('error', (error) => {
@@ -331,6 +334,7 @@ ipcMain.handle('capture-raw-image', async (event, ip) => {
     return new Promise((resolve, reject) => {
       result.on('end', () => {
         const buffer = Buffer.concat(chunks);
+        console.log('Buffer:', buffer.length);
         fs.writeFile(outputPath, buffer, (err) => {
           if (err) {
             reject(err);
