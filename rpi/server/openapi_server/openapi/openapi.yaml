@@ -37,9 +37,10 @@ paths:
       responses:
         "200":
           content:
-            application/json:
+            application/octet-stream:
               schema:
-                $ref: '#/components/schemas/_camera_capture_post_200_response'
+                format: binary
+                type: string
           description: Image captured successfully
       summary: Capture raw image
       tags:
@@ -245,20 +246,6 @@ components:
           title: exposure_time
           type: number
       title: _camera_exposure_post_request
-      type: object
-    _camera_capture_post_200_response:
-      example:
-        image_url: image_url
-        message: message
-      properties:
-        message:
-          title: message
-          type: string
-        image_url:
-          description: URL to the captured image
-          title: image_url
-          type: string
-      title: _camera_capture_post_200_response
       type: object
     _lights_blue_max_time_post_request:
       properties:

@@ -4,11 +4,8 @@ from typing import Tuple
 from typing import Union
 
 from openapi_server.models.camera_autofocus_post_request import CameraAutofocusPostRequest  # noqa: E501
-from openapi_server.models.camera_capture_post200_response import CameraCapturePost200Response  # noqa: E501
 from openapi_server.models.camera_exposure_post_request import CameraExposurePostRequest  # noqa: E501
 from openapi_server.models.camera_manual_focus_post_request import CameraManualFocusPostRequest  # noqa: E501
-from openapi_server.models.lights_control_post200_response import LightsControlPost200Response  # noqa: E501
-from openapi_server import util
 
 from openapi_server.controllers.camera_controller_impl import (
     camera_preview_start_impl,
@@ -17,6 +14,7 @@ from openapi_server.controllers.camera_controller_impl import (
     camera_autofocus_post_impl,
     camera_exposure_post_impl,
     camera_manual_focus_post_impl,
+    camera_capture_post_impl,
 )
 
 
@@ -40,9 +38,9 @@ def camera_capture_post():  # noqa: E501
      # noqa: E501
 
 
-    :rtype: Union[CameraCapturePost200Response, Tuple[CameraCapturePost200Response, int], Tuple[CameraCapturePost200Response, int, Dict[str, str]]
+    :rtype: Union[file, Tuple[file, int], Tuple[file, int, Dict[str, str]]
     """
-    return 'do some magic!'
+    return camera_capture_post_impl()
 
 
 def camera_exposure_post():  # noqa: E501

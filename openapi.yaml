@@ -200,15 +200,10 @@ paths:
         '200':
           description: Image captured successfully
           content:
-            application/json:
+            application/octet-stream:  
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  image_url:
-                    type: string
-                    description: URL to the captured image
+                type: string
+                format: binary
 
   /lights/blue/max_time:
     post:

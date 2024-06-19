@@ -61,4 +61,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('stream').style.display = 'none';
         }
     });
+
+    // Capture image
+    document.getElementById('capture-button').addEventListener('click', async () => {
+        const thumbnailPath  = await window.api.captureRawImage(ip);
+        console.log('Captured image:', thumbnailPath);
+        if (!thumbnailPath) {
+            document.getElementById('capture-info').innerHTML = "Failed to capture image";
+            document.getElementById('capture-thumbnail').style.display = 'none';
+        } else {
+            document.getElementById('capture-info').innerHTML = "Saved to: " + thumbnailPath;
+            document.getElementById('capture-thumbnail').src = thumbnailPath;
+            document.getElementById('capture-thumbnail').style.display = 'block';
+        }
+    });
 });

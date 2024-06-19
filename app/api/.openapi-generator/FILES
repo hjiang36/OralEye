@@ -4,7 +4,6 @@
 README.md
 docs/CameraApi.md
 docs/CameraAutofocusPostRequest.md
-docs/CameraCapturePost200Response.md
 docs/CameraExposurePostRequest.md
 docs/CameraManualFocusPostRequest.md
 docs/LightsApi.md
@@ -19,7 +18,6 @@ src/api/CameraApi.js
 src/api/LightsApi.js
 src/index.js
 src/model/CameraAutofocusPostRequest.js
-src/model/CameraCapturePost200Response.js
 src/model/CameraExposurePostRequest.js
 src/model/CameraManualFocusPostRequest.js
 src/model/LightsBlueMaxTimePostRequest.js

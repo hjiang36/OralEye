@@ -21,4 +21,5 @@ contextBridge.exposeInMainWorld('api', {
   getLightStatus: (ip) => ipcRenderer.invoke('get-light-status', ip),
   setLightStatus: (ip, lightStates) => ipcRenderer.send('set-light-status', ip, lightStates),
   setStreamingStatus: (ip, status) => ipcRenderer.send('set-streaming-status', ip, status),
+  captureRawImage: (ip) => ipcRenderer.invoke('capture-raw-image', ip),
 });
