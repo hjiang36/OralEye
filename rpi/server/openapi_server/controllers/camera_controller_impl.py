@@ -127,7 +127,7 @@ def generate_thumbnail(raw_buffer: np.ndarray, thumbnail_size):
 
     # Convert to PIL image and resize to target size
     pil_img = Image.fromarray(img)
-    pil_img.resize(thumbnail_size)
+    pil_img = pil_img.resize(thumbnail_size)
     return pil_img
 
 def capture_raw_squence():
