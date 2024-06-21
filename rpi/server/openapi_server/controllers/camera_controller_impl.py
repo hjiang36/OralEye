@@ -123,10 +123,13 @@ def generate_thumbnail(raw_buffer: np.ndarray, thumbnail_size):
     img[:, :, 2] = b
     img[:, :, 1] = g
     img[:, :, 0] = r
+    print("Created rgb image from raw buffer.")
 
     # Convert to PIL image and resize to target size
     pil_img = Image.fromarray(img)
+    print("Converted to PIL image.")
     pil_img.resize(thumbnail_size)
+    print("Resized to target size.")
     return pil_img
 
 def capture_raw_squence():
@@ -161,7 +164,8 @@ def capture_raw_squence():
 
         # Generate thumbnail
         thumbnail_width = 256
-        thumbnail_height = int(thumbnail_width * raw_buffer.shape[0] / raw_buffer.shape[1])
+        thumbnail_height = int(thumbnail_width * raw_resolution[1] / raw_resolution[0])
+        print('thumbnail size: ', thumbnail_width, thumbnail_height)
         size = (thumbnail_width, thumbnail_height)
         thumbnail_ambient = generate_thumbnail(ambient_img, size)
         thumbnail_white = generate_thumbnail(white_img, size)
@@ -199,4 +203,5 @@ def camera_capture_post_impl():
             as_attachment=True,
             attachment_filename=job_id + '.jpg')
     except Exception as e:
+        print(str(e))
         return {'error': str(e)}, 500
