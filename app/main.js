@@ -254,58 +254,8 @@ ipcMain.on('set-streaming-status', (event, ip, status) => {
   });
 });
 
-// Thumbnail generation
-async function generateThumbnail(fileData) {
-  // TODO: the rawBuffer width and height are hardcoded for now
-  const rawWidth = 4608;
-  const rawHeight = 2592;
-  const rawStride = rawWidth * 10 / 8; // 10 bits per pixel
-
-  // Create a low-res thumbnail
-  const thumbnailWidth = 512;
-  const thumbnailHeight = Math.floor((thumbnailWidth / rawWidth) * rawHeight);
-  const image = new Jimp(thumbnailWidth, thumbnailHeight, (err, image) => {
-    if (err) throw err;
-  });
-  const scaleX = rawWidth / thumbnailWidth;
-  const scaleY = rawHeight / thumbnailHeight;
-
-  for (let y = 0; y < thumbnailHeight; y++) {
-    for (let x = 0; x < thumbnailWidth; x++) {
-      // Find the original pixel coordinates of RGGB
-      const origX = Math.floor(x * scaleX / 2) * 2;
-      const origY = Math.floor(y * scaleY / 2) * 2;
-
-      // Compute RGB value, we only keep the highest 8 bits
-      // Pattern here is hardcoded as BGGR
-      const xIndex = Math.floor(origX * 5 / 4) + (origX % 4);
-      const r = fileData[(origY + 1) * rawStride + xIndex + 1];
-      const g = (
-        fileData[origY * rawStride + xIndex + 1] / 2 +
-        fileData[(origY + 1) * rawStride + xIndex] / 2);
-      const b = fileData[origY * rawStride + xIndex];
-      const color = Jimp.rgbaToInt(r, g, b, 255);
-      image.setPixelColor(color, x, y);
-    }
-  }
-
-  // Save thumbnail as a PNG file
-  const thumbnailPath = path.join(app.getPath('downloads'), 'capture.png');
-
-  // Save thumbnail as a PNG file
-  await image.write(thumbnailPath, (err) => {
-    if (err) {
-      console.error('Error saving image:', err);
-    } else {
-      console.log('Image saved successfully!');
-    }
-  });
-  return thumbnailPath;
-}
-
 // Capture raw image
 ipcMain.handle('capture-raw-image', async (event, ip) => {
-  const outputPath = path.join(app.getPath('downloads'), 'capture.raw');
   var apiClient = new OralEyeApi.ApiClient(basePath = "http://" + ip + ":8080");
   var cameraApi = new OralEyeApi.CameraApi(apiClient);
 
@@ -316,6 +266,13 @@ ipcMain.handle('capture-raw-image', async (event, ip) => {
         if (error) {
           return reject(error);
         }
+
+        // Get the filename
+        const contentDisposition = response.headers['content-disposition'];
+        const filename = contentDisposition
+          ? contentDisposition.split('filename=')[1].replace(/"/g, '')
+          : 'unknown.jpg';
+        const outputPath = path.join(app.getPath('downloads'), filename);
 
         // Ensure response is a readable stream
         if (!response || typeof response.on !== 'function') {
@@ -329,15 +286,12 @@ ipcMain.handle('capture-raw-image', async (event, ip) => {
 
         response.on('end', () => {
           const buffer = Buffer.concat(chunks);
-          console.log('Buffer:', buffer.length);
           fs.writeFile(outputPath, buffer, (err) => {
             if (err) {
               reject(err);
             } else {
               // Generate thumbnail
-              const thumbnailPath = generateThumbnail(buffer);
-              console.log('Thumbnail path:', thumbnailPath);
-              resolve(thumbnailPath);
+              resolve(outputPath);
             }
           });
 
