@@ -102,27 +102,18 @@ def camera_manual_focus_post_impl(focus_distance_mm: int):
     pi_camera.set_controls({'LensPosition': lens_position})
     return {'message': 'Focus distance is set to {} mm'.format(focus_distance_mm)}, 200
 
-def crop_and_save_raw(raw_buffer: np.ndarray, output_file: str, metadata: dict):
-    # 1 - Center crop the raw buffer to be a square
-    crop_size = min(raw_buffer.shape[0], raw_buffer.shape[1])
-    center = (raw_buffer.shape[0] // 2, raw_buffer.shape[1] // 2)
-    half_size = crop_size // 2
-    crop_image = raw_buffer[center[0] - half_size:center[0] + half_size,
-                            center[1] - half_size:center[1] + half_size]
-    
-    # 2 - Save raw image
+def save_raw(raw_buffer: np.ndarray, output_file: str, metadata: dict):
+    # Save raw image
     # TODO: save the raw image to standard EXR format with metadata
-    bytes_buffer = crop_image.tobytes()
+    bytes_buffer = raw_buffer.tobytes()
     with open(output_file + '.raw', 'wb') as f:
         f.write(bytes_buffer)
     
-    # 3 - Save metadata
+    # Save metadata
     with open(output_file + '.json', 'w') as f:
         f.write(json.dumps(metadata))
-    
-    return crop_image
 
-def generate_thumbnail(raw_buffer: np.ndarray, thumbnail_size: int):
+def generate_thumbnail(raw_buffer: np.ndarray, thumbnail_size):
     b = raw_buffer[::2, ::5]
     g = raw_buffer[1::2, ::5]
     r = raw_buffer[::2, 1::5]
@@ -135,7 +126,7 @@ def generate_thumbnail(raw_buffer: np.ndarray, thumbnail_size: int):
 
     # Convert to PIL image and resize to target size
     pil_img = Image.fromarray(img)
-    pil_img.resize((thumbnail_size, thumbnail_size))
+    pil_img.resize(thumbnail_size)
     return pil_img
 
 def capture_raw_squence():
@@ -152,33 +143,35 @@ def capture_raw_squence():
         # Set lighting to room light
         set_light_status(white_led='off', blue_led='off', red_laser='off')
         raw_buffer = pi_camera.capture_array('raw')
-        metadata = pi_camera.get_metadata()
-        ambient_img = crop_and_save_raw(raw_buffer, '/tmp/raw_capture_' + job_id + '_ambient', metadata)
+        metadata = pi_camera.capture_metadata()
+        ambient_img = save_raw(raw_buffer, '/tmp/raw_capture_' + job_id + '_ambient', metadata)
 
         # Set lighting to white LED
         set_light_status(white_led='on', blue_led='off')
         raw_buffer = pi_camera.capture_array('raw')
-        metadata = pi_camera.get_metadata()
-        white_img = crop_and_save_raw(raw_buffer, '/tmp/raw_capture_' + job_id + '_white', metadata)
+        metadata = pi_camera.capture_metadata()
+        white_img = save_raw(raw_buffer, '/tmp/raw_capture_' + job_id + '_white', metadata)
 
         # Set lighting to blue LED
         set_light_status(white_led='off', blue_led='on')
         raw_buffer = pi_camera.capture_array('raw')
         set_light_status(blue_led='off')  # Turn off blue LED as soon as possible
-        metadata = pi_camera.get_metadata()
-        blue_img = crop_and_save_raw(raw_buffer, '/tmp/raw_capture_' + job_id + '_blue', metadata)
+        metadata = pi_camera.capture_metadata()
+        blue_img = save_raw(raw_buffer, '/tmp/raw_capture_' + job_id + '_blue', metadata)
 
         # Generate thumbnail
-        thumbnail_size = 240
-        thumbnail_ambient = generate_thumbnail(ambient_img, thumbnail_size)
-        thumbnail_white = generate_thumbnail(white_img, thumbnail_size)
-        thumbnail_blue = generate_thumbnail(blue_img, thumbnail_size)
+        thumbnail_width = 256
+        thumbnail_height = int(thumbnail_width * raw_buffer.shape[0] / raw_buffer.shape[1])
+        size = (thumbnail_width, thumbnail_height)
+        thumbnail_ambient = generate_thumbnail(ambient_img, size)
+        thumbnail_white = generate_thumbnail(white_img, size)
+        thumbnail_blue = generate_thumbnail(blue_img, size)
 
         # Stitch the thumbnails together and save to file
-        thumbnail = Image.new('RGB', (thumbnail_size * 3, thumbnail_size))
+        thumbnail = Image.new('RGB', (thumbnail_width, thumbnail_height * 3))
         thumbnail.paste(thumbnail_ambient, (0, 0))
-        thumbnail.paste(thumbnail_white, (thumbnail_size, 0))
-        thumbnail.paste(thumbnail_blue, (thumbnail_size * 2, 0))
+        thumbnail.paste(thumbnail_white, (0, thumbnail_height))
+        thumbnail.paste(thumbnail_blue, (0, thumbnail_height * 2))
         thumbnail.save('/tmp/raw_capture_' + job_id + '_thumbnail.jpg')
 
         # Switch back to video configuration
