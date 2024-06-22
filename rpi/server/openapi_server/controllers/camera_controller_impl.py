@@ -9,6 +9,7 @@ import io
 import json
 import numpy as np
 import threading
+import time
 import uuid
 
 from openapi_server.controllers.lights_controller_impl import set_light_status
@@ -143,18 +144,21 @@ def capture_raw_squence():
 
         # Set lighting to room light
         set_light_status(white_led='off', blue_led='off', red_laser='off')
+        time.sleep(0.2)  # Wait for the room light to stabilize
         raw_buffer = pi_camera.capture_array('raw')
         metadata = pi_camera.capture_metadata()
         ambient_img = save_raw(raw_buffer, '/tmp/raw_capture_' + job_id + '_ambient', metadata)
 
         # Set lighting to white LED
         set_light_status(white_led='on', blue_led='off')
+        time.sleep(0.2)  # Wait for the white LED to stabilize
         raw_buffer = pi_camera.capture_array('raw')
         metadata = pi_camera.capture_metadata()
         white_img = save_raw(raw_buffer, '/tmp/raw_capture_' + job_id + '_white', metadata)
 
         # Set lighting to blue LED
         set_light_status(white_led='off', blue_led='on')
+        time.sleep(0.2)  # Wait for the blue LED to stabilize
         raw_buffer = pi_camera.capture_array('raw')
         set_light_status(blue_led='off')  # Turn off blue LED as soon as possible
         metadata = pi_camera.capture_metadata()
