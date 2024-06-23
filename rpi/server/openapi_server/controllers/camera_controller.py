@@ -6,6 +6,9 @@ from typing import Union
 from openapi_server.models.camera_autofocus_post_request import CameraAutofocusPostRequest  # noqa: E501
 from openapi_server.models.camera_exposure_post_request import CameraExposurePostRequest  # noqa: E501
 from openapi_server.models.camera_manual_focus_post_request import CameraManualFocusPostRequest  # noqa: E501
+from openapi_server.models.camera_metadata_get200_response import CameraMetadataGet200Response  # noqa: E501
+from openapi_server.models.lights_control_post200_response import LightsControlPost200Response  # noqa: E501
+from openapi_server import util
 
 from openapi_server.controllers.camera_controller_impl import (
     camera_preview_start_impl,
@@ -15,6 +18,7 @@ from openapi_server.controllers.camera_controller_impl import (
     camera_exposure_post_impl,
     camera_manual_focus_post_impl,
     camera_capture_post_impl,
+    camera_metadata_get_impl,
 )
 
 
@@ -69,6 +73,22 @@ def camera_manual_focus_post():  # noqa: E501
     """
     camera_manual_focus_post_request = CameraManualFocusPostRequest.from_dict(connexion.request.get_json())  # noqa: E501
     return camera_manual_focus_post_impl(camera_manual_focus_post_request.focus_distance)
+
+
+def camera_metadata_get(job_id, light):  # noqa: E501
+    """Retrieve metadata of a capture
+
+     # noqa: E501
+
+    :param job_id: 
+    :type job_id: str
+    :type job_id: str
+    :param light: 
+    :type light: str
+
+    :rtype: Union[CameraMetadataGet200Response, Tuple[CameraMetadataGet200Response, int], Tuple[CameraMetadataGet200Response, int, Dict[str, str]]
+    """
+    return camera_metadata_get_impl(job_id, light)
 
 
 def camera_preview_start_post():  # noqa: E501

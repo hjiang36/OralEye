@@ -204,6 +204,64 @@ paths:
               schema:
                 type: string
                 format: binary
+  
+  /camera/metadata:
+    get:
+      tags:
+        - camera
+      summary: Retrieve metadata of a capture
+      parameters:
+        - name: job_id
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: light
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [ambient, white, blue]
+      responses:
+        '200':
+          description: Metadata retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  job_id:
+                    type: string
+                    format: uuid
+                  light:
+                    type: string
+                    enum: [ambient, white, blue]
+                  timestamp:
+                    type: string
+                    format: date-time
+                  other_metadata:
+                    type: object
+                    additionalProperties:
+                      type: string
+        '404':
+          description: Metadata not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
 
   /lights/blue/max_time:
     post:

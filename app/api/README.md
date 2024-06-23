@@ -125,6 +125,7 @@ Class | Method | HTTP request | Description
 *OralEyeApi.CameraApi* | [**cameraCapturePost**](docs/CameraApi.md#cameraCapturePost) | **POST** /camera/capture | Capture raw image
 *OralEyeApi.CameraApi* | [**cameraExposurePost**](docs/CameraApi.md#cameraExposurePost) | **POST** /camera/exposure | Set exposure time
 *OralEyeApi.CameraApi* | [**cameraManualFocusPost**](docs/CameraApi.md#cameraManualFocusPost) | **POST** /camera/manual_focus | Set manual focus distance
+*OralEyeApi.CameraApi* | [**cameraMetadataGet**](docs/CameraApi.md#cameraMetadataGet) | **GET** /camera/metadata | Retrieve metadata of a capture
 *OralEyeApi.CameraApi* | [**cameraPreviewStartPost**](docs/CameraApi.md#cameraPreviewStartPost) | **POST** /camera/preview/start | Start camera preview
 *OralEyeApi.CameraApi* | [**cameraPreviewStopPost**](docs/CameraApi.md#cameraPreviewStopPost) | **POST** /camera/preview/stop | Stop camera preview
 *OralEyeApi.CameraApi* | [**cameraPreviewVideoFeedGet**](docs/CameraApi.md#cameraPreviewVideoFeedGet) | **GET** /camera/preview/video_feed | Get MJPEG video feed
@@ -138,6 +139,7 @@ Class | Method | HTTP request | Description
  - [OralEyeApi.CameraAutofocusPostRequest](docs/CameraAutofocusPostRequest.md)
  - [OralEyeApi.CameraExposurePostRequest](docs/CameraExposurePostRequest.md)
  - [OralEyeApi.CameraManualFocusPostRequest](docs/CameraManualFocusPostRequest.md)
+ - [OralEyeApi.CameraMetadataGet200Response](docs/CameraMetadataGet200Response.md)
  - [OralEyeApi.LightsBlueMaxTimePostRequest](docs/LightsBlueMaxTimePostRequest.md)
  - [OralEyeApi.LightsControlPost200Response](docs/LightsControlPost200Response.md)
  - [OralEyeApi.LightsStatusGet200Response](docs/LightsStatusGet200Response.md)

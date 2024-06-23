@@ -86,6 +86,52 @@ paths:
       tags:
       - camera
       x-openapi-router-controller: openapi_server.controllers.camera_controller
+  /camera/metadata:
+    get:
+      operationId: camera_metadata_get
+      parameters:
+      - explode: true
+        in: query
+        name: job_id
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: light
+        required: true
+        schema:
+          enum:
+          - ambient
+          - white
+          - blue
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_camera_metadata_get_200_response'
+          description: Metadata retrieved successfully
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_lights_control_post_200_response'
+          description: Metadata not found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_lights_control_post_200_response'
+          description: Internal server error
+      summary: Retrieve metadata of a capture
+      tags:
+      - camera
+      x-openapi-router-controller: openapi_server.controllers.camera_controller
   /camera/preview/start:
     post:
       operationId: camera_preview_start_post
@@ -246,6 +292,36 @@ components:
           title: exposure_time
           type: number
       title: _camera_exposure_post_request
+      type: object
+    _camera_metadata_get_200_response:
+      example:
+        light: ambient
+        job_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        other_metadata:
+          key: other_metadata
+        timestamp: 2000-01-23T04:56:07.000+00:00
+      properties:
+        job_id:
+          format: uuid
+          title: job_id
+          type: string
+        light:
+          enum:
+          - ambient
+          - white
+          - blue
+          title: light
+          type: string
+        timestamp:
+          format: date-time
+          title: timestamp
+          type: string
+        other_metadata:
+          additionalProperties:
+            type: string
+          title: other_metadata
+          type: object
+      title: _camera_metadata_get_200_response
       type: object
     _lights_blue_max_time_post_request:
       properties:
