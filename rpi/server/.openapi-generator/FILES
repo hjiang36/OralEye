@@ -16,6 +16,7 @@ openapi_server/models/base_model.py
 openapi_server/models/camera_autofocus_post_request.py
 openapi_server/models/camera_exposure_post_request.py
 openapi_server/models/camera_manual_focus_post_request.py
+openapi_server/models/camera_metadata_get200_response.py
 openapi_server/models/lights_blue_max_time_post_request.py
 openapi_server/models/lights_control_post200_response.py
 openapi_server/models/lights_status_get200_response.py

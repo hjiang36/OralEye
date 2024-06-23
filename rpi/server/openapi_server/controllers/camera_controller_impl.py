@@ -8,6 +8,7 @@ from PIL import Image
 import io
 import json
 import numpy as np
+import os
 import threading
 import time
 import uuid
@@ -206,3 +207,12 @@ def camera_capture_post_impl():
     except Exception as e:
         print(str(e))
         return {'error': str(e)}, 500
+    
+def camera_metadata_get_impl(job_id: str, light: str):
+    # Check if the file exists
+    if not os.path.exists('/tmp/raw_capture_' + job_id + '_' + light + '.json'):
+        return {'message': 'Metadata file not found'}, 404
+    # Load metadata from file
+    with open('/tmp/raw_capture_' + job_id + '_' + light + '.json', 'r') as f:
+        metadata = json.load(f)
+    return metadata, 200

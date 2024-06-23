@@ -16,6 +16,7 @@ import ApiClient from "../ApiClient";
 import CameraAutofocusPostRequest from '../model/CameraAutofocusPostRequest';
 import CameraExposurePostRequest from '../model/CameraExposurePostRequest';
 import CameraManualFocusPostRequest from '../model/CameraManualFocusPostRequest';
+import CameraMetadataGet200Response from '../model/CameraMetadataGet200Response';
 import LightsControlPost200Response from '../model/LightsControlPost200Response';
 
 /**
@@ -191,6 +192,54 @@ export default class CameraApi {
       let returnType = LightsControlPost200Response;
       return this.apiClient.callApi(
         '/camera/manual_focus', 'POST',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null, callback
+      );
+    }
+
+    /**
+     * Callback function to receive the result of the cameraMetadataGet operation.
+     * @callback module:api/CameraApi~cameraMetadataGetCallback
+     * @param {String} error Error message, if any.
+     * @param {module:model/CameraMetadataGet200Response} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve metadata of a capture
+     * @param {String} jobId 
+     * @param {module:model/String} light 
+     * @param {module:api/CameraApi~cameraMetadataGetCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/CameraMetadataGet200Response}
+     */
+    cameraMetadataGet(jobId, light, callback) {
+      let postBody = null;
+      // verify the required parameter 'jobId' is set
+      if (jobId === undefined || jobId === null) {
+        throw new Error("Missing the required parameter 'jobId' when calling cameraMetadataGet");
+      }
+      // verify the required parameter 'light' is set
+      if (light === undefined || light === null) {
+        throw new Error("Missing the required parameter 'light' when calling cameraMetadataGet");
+      }
+
+      let pathParams = {
+      };
+      let queryParams = {
+        'job_id': jobId,
+        'light': light
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = [];
+      let contentTypes = [];
+      let accepts = ['application/json'];
+      let returnType = CameraMetadataGet200Response;
+      return this.apiClient.callApi(
+        '/camera/metadata', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, null, callback
       );
