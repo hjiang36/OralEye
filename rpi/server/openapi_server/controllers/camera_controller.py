@@ -72,7 +72,7 @@ def camera_manual_focus_post():  # noqa: E501
     :rtype: Union[LightsControlPost200Response, Tuple[LightsControlPost200Response, int], Tuple[LightsControlPost200Response, int, Dict[str, str]]
     """
     camera_manual_focus_post_request = CameraManualFocusPostRequest.from_dict(connexion.request.get_json())  # noqa: E501
-    return camera_manual_focus_post_impl(camera_manual_focus_post_request.focus_distance)
+    return camera_manual_focus_post_impl(camera_manual_focus_post_request.distance)
 
 
 def camera_metadata_get(job_id, light):  # noqa: E501
