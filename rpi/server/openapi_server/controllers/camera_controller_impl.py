@@ -36,6 +36,10 @@ camera_lock = threading.Lock()
 camera_running = False
 camera_capturing = False
 
+# Capture settings
+capture_exp_time = 0  # us
+capture_analog_gain = 0
+
 def generate():
     while True:
         if not camera_running:
@@ -97,7 +101,8 @@ def camera_autofocus_post_impl(state: str):
         return {'message': 'Auto-focus is set to off'}, 200
     
 def camera_exposure_post_impl(exposure_time_us: int):
-    pi_camera.set_controls({'ExposureTime': exposure_time_us})
+    global capture_exp_time
+    capture_exp_time = exposure_time_us
     return {'message': 'Exposure time is set to {} us'.format(exposure_time_us)}, 200
 
 def camera_manual_focus_post_impl(focus_distance_mm: int):
@@ -135,7 +140,6 @@ def generate_thumbnail(raw_buffer: np.ndarray, thumbnail_size):
     return pil_img
 
 def capture_raw_squence():
-    t0 = time.time()
     global camera_capturing
     camera_capturing = True
 
@@ -145,10 +149,18 @@ def capture_raw_squence():
         pi_camera.stop()
         pi_camera.configure(still_config)
 
-        # Start camera
+        job_id = str(uuid.uuid4())
+
+        # Set exposure time and gain
+        if capture_exp_time > 0:
+            pi_camera.set_controls({
+                "AeEnable": False,
+                "ExposureTime": int(capture_exp_time),
+            })
+
+        # Start the camera 
         pi_camera.start()
 
-        job_id = str(uuid.uuid4())
 
         # Set lighting to room light
         set_light_status(white_led='off', blue_led='off', red_laser='off')
@@ -190,6 +202,7 @@ def capture_raw_squence():
         # Switch back to video configuration
         pi_camera.stop()
         pi_camera.configure(video_config)
+        pi_camera.set_controls({"AeEnable": True})
 
         # If camera was running, restart it
         if camera_running:
