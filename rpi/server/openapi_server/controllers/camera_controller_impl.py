@@ -34,12 +34,14 @@ output = FileOutput(stream)
 
 camera_lock = threading.Lock()
 camera_running = False
-
+camera_capturing = False
 
 def generate():
     while True:
         if not camera_running:
             break
+        if camera_capturing:
+            time.sleep(1)  # leave camera to capture thread.
         with camera_lock:
             pi_camera.capture_file(stream, format='jpeg')
             frame = stream.getvalue()
@@ -133,6 +135,10 @@ def generate_thumbnail(raw_buffer: np.ndarray, thumbnail_size):
     return pil_img
 
 def capture_raw_squence():
+    t0 = time.time()
+    global camera_capturing
+    camera_capturing = True
+
     with camera_lock:
         # Stop camera so that we can swtich to still configuration
         pi_camera.stop_encoder()
@@ -141,6 +147,7 @@ def capture_raw_squence():
 
         # Start camera
         pi_camera.start()
+
         job_id = str(uuid.uuid4())
 
         # Set lighting to room light
@@ -184,12 +191,13 @@ def capture_raw_squence():
         pi_camera.stop()
         pi_camera.configure(video_config)
 
-         # If camera was running, restart it
+        # If camera was running, restart it
         if camera_running:
             pi_camera.start()
             pi_camera.start_encoder(encoder, output)
             set_light_status(red_laser='on')
 
+        camera_capturing = False 
         # Return the job id
         return job_id
 
