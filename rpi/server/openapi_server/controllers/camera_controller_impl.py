@@ -104,17 +104,37 @@ def camera_manual_focus_post_impl(focus_distance_mm: int):
     pi_camera.set_controls({'LensPosition': lens_position})
     return {'message': 'Focus distance is set to {} mm'.format(focus_distance_mm)}, 200
 
-def save_raw(raw_buffer: np.ndarray, output_file: str, metadata: dict):
+def save_raw(raw_buffer: np.ndarray, output_file: str, metadata: dict, fomat='png'):
     # Save raw image
-    # TODO: save the raw image to standard EXR format with metadata
-    bytes_buffer = raw_buffer.tobytes()
-    with open(output_file + '.raw', 'wb') as f:
-        f.write(bytes_buffer)
+    if fomat == 'png':
+        bit_depth = 10
+        height, stride = raw_buffer.shape
+        width = stride * 8 // bit_depth
+
+        # Unpack data
+        raw_data_packed = raw_buffer.astype(np.uint16)
+        raw = np.zeros((height, width), dtype=np.uint16)
+
+        for i in range(4):
+            raw[:, i::4] = raw_data_packed[:, i::5] * 4 + (
+                (raw_data_packed[:, 4::5] >> (6 - 2 * i)) & 3)
+        # Normalize to 16-bit
+        raw = raw * (2 ** 6)
+
+        # Save to PNG with metadata
+        image = Image.fromarray(raw, mode='I;16')
+        image.info.update(metadata)
+        image.save(output_file + '.png', "PNG", pnginfo=image.info)
+    elif format == 'raw':
+        bytes_buffer = raw_buffer.tobytes()
+        with open(output_file + '.raw', 'wb') as f:
+            f.write(bytes_buffer)
+    else:
+        print('Unsupported format to save raw: ' + format)
     
     # Save metadata
     with open(output_file + '.json', 'w') as f:
         f.write(json.dumps(metadata))
-    return raw_buffer
 
 def generate_thumbnail(raw_buffer: np.ndarray, thumbnail_size):
     b = raw_buffer[::2, ::5]
@@ -146,24 +166,24 @@ def capture_raw_squence():
         # Set lighting to room light
         set_light_status(white_led='off', blue_led='off', red_laser='off')
         time.sleep(0.2)  # Wait for the room light to stabilize
-        raw_buffer = pi_camera.capture_array('raw')
+        ambient_img = pi_camera.capture_array('raw')
         metadata = pi_camera.capture_metadata()
-        ambient_img = save_raw(raw_buffer, '/tmp/raw_capture_' + job_id + '_ambient', metadata)
+        save_raw(ambient_img, '/tmp/raw_capture_' + job_id + '_ambient', metadata)
 
         # Set lighting to white LED
         set_light_status(white_led='on', blue_led='off')
         time.sleep(0.2)  # Wait for the white LED to stabilize
-        raw_buffer = pi_camera.capture_array('raw')
+        white_img = pi_camera.capture_array('raw')
         metadata = pi_camera.capture_metadata()
-        white_img = save_raw(raw_buffer, '/tmp/raw_capture_' + job_id + '_white', metadata)
+        save_raw(white_img, '/tmp/raw_capture_' + job_id + '_white', metadata)
 
         # Set lighting to blue LED
         set_light_status(white_led='off', blue_led='on')
         time.sleep(0.2)  # Wait for the blue LED to stabilize
-        raw_buffer = pi_camera.capture_array('raw')
+        blue_img = pi_camera.capture_array('raw')
         set_light_status(blue_led='off')  # Turn off blue LED as soon as possible
         metadata = pi_camera.capture_metadata()
-        blue_img = save_raw(raw_buffer, '/tmp/raw_capture_' + job_id + '_blue', metadata)
+        save_raw(blue_img, '/tmp/raw_capture_' + job_id + '_blue', metadata)
 
         # Generate thumbnail
         thumbnail_width = 256
