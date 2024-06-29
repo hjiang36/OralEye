@@ -104,10 +104,11 @@ def camera_manual_focus_post_impl(focus_distance_mm: int):
     pi_camera.set_controls({'LensPosition': lens_position})
     return {'message': 'Focus distance is set to {} mm'.format(focus_distance_mm)}, 200
 
-def save_raw(raw_buffer: np.ndarray, output_file: str, metadata: dict, fomat='png'):
-    t0 = time.time()
+def save_raw(raw_buffer: np.ndarray, output_file: str, metadata: dict, fomat='raw'):
     # Save raw image
     if fomat == 'png':
+        # PNG saving is very slow on raspberry pi zero, takes >20 secs.
+        # We may re-evaluate with raspberry pi 5 in the future.
         bit_depth = 10
         height, stride = raw_buffer.shape
         width = stride * 8 // bit_depth
@@ -122,16 +123,12 @@ def save_raw(raw_buffer: np.ndarray, output_file: str, metadata: dict, fomat='pn
         # Normalize to 16-bit
         raw = raw * (2 ** 6)
 
-        print('Time to unpack raw data: ', time.time() - t0)
-        t0 = time.time()
-
         # Save to PNG with metadata
         image = Image.fromarray(raw, mode='I;16')
         png_metadata = PngImagePlugin.PngInfo()
         for key, value in metadata.items():
             png_metadata.add_text(key, str(value))
         image.save(output_file + '.png', "PNG", pnginfo=png_metadata)
-        print('Time to save PNG: ', time.time() - t0)
     elif format == 'raw':
         bytes_buffer = raw_buffer.tobytes()
         with open(output_file + '.raw', 'wb') as f:
