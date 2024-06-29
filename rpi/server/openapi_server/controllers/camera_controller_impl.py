@@ -111,9 +111,9 @@ def camera_manual_focus_post_impl(focus_distance_mm: int):
     pi_camera.set_controls({'LensPosition': lens_position})
     return {'message': 'Focus distance is set to {} mm'.format(focus_distance_mm)}, 200
 
-def save_raw(raw_buffer: np.ndarray, output_file: str, metadata: dict, fomat='raw'):
+def save_raw(raw_buffer: np.ndarray, output_file: str, metadata: dict, output_format='raw'):
     # Save raw image
-    if fomat == 'png':
+    if output_format == 'png':
         # PNG saving is very slow on raspberry pi zero, takes >20 secs.
         # We may re-evaluate with raspberry pi 5 in the future.
         bit_depth = 10
@@ -136,12 +136,12 @@ def save_raw(raw_buffer: np.ndarray, output_file: str, metadata: dict, fomat='ra
         for key, value in metadata.items():
             png_metadata.add_text(key, str(value))
         image.save(output_file + '.png', "PNG", pnginfo=png_metadata)
-    elif format == 'raw':
+    elif output_format == 'raw':
         bytes_buffer = raw_buffer.tobytes()
         with open(output_file + '.raw', 'wb') as f:
             f.write(bytes_buffer)
     else:
-        print('Unsupported format to save raw: ' + format)
+        print('Unsupported format to save raw: ' + output_format)
     
     # Save metadata
     with open(output_file + '.json', 'w') as f:
