@@ -3,7 +3,7 @@ from picamera2 import Picamera2
 from picamera2.encoders import JpegEncoder
 from picamera2.outputs import FileOutput
 from libcamera import controls
-from PIL import Image
+from PIL import Image, PngImagePlugin
 
 import io
 import json
@@ -105,6 +105,7 @@ def camera_manual_focus_post_impl(focus_distance_mm: int):
     return {'message': 'Focus distance is set to {} mm'.format(focus_distance_mm)}, 200
 
 def save_raw(raw_buffer: np.ndarray, output_file: str, metadata: dict, fomat='png'):
+    t0 = time.time()
     # Save raw image
     if fomat == 'png':
         bit_depth = 10
@@ -121,10 +122,16 @@ def save_raw(raw_buffer: np.ndarray, output_file: str, metadata: dict, fomat='pn
         # Normalize to 16-bit
         raw = raw * (2 ** 6)
 
+        print('Time to unpack raw data: ', time.time() - t0)
+        t0 = time.time()
+
         # Save to PNG with metadata
         image = Image.fromarray(raw, mode='I;16')
-        image.info.update(metadata)
-        image.save(output_file + '.png', "PNG", pnginfo=image.info)
+        png_metadata = PngImagePlugin.PngInfo()
+        for key, value in metadata.items():
+            png_metadata.add_text(key, str(value))
+        image.save(output_file + '.png', "PNG", pnginfo=png_metadata)
+        print('Time to save PNG: ', time.time() - t0)
     elif format == 'raw':
         bytes_buffer = raw_buffer.tobytes()
         with open(output_file + '.raw', 'wb') as f:
@@ -135,6 +142,7 @@ def save_raw(raw_buffer: np.ndarray, output_file: str, metadata: dict, fomat='pn
     # Save metadata
     with open(output_file + '.json', 'w') as f:
         f.write(json.dumps(metadata))
+    return raw_buffer
 
 def generate_thumbnail(raw_buffer: np.ndarray, thumbnail_size):
     b = raw_buffer[::2, ::5]
