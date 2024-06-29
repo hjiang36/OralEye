@@ -262,3 +262,14 @@ def camera_metadata_get_impl(job_id: str, light: str):
     with open('/tmp/raw_capture_' + job_id + '_' + light + '.json', 'r') as f:
         metadata = json.load(f)
     return metadata, 200
+
+def camera_download_raw_get_impl(job_id: str, light: str):
+    # Check if the file exists
+    if not os.path.exists('/tmp/raw_capture_' + job_id + '_' + light + '.raw'):
+        return {'message': 'Raw file not found'}, 404
+    # Return the raw file
+    return send_file(
+        '/tmp/raw_capture_' + job_id + '_' + light + '.raw',
+        mimetype='application/octet-stream',
+        as_attachment=True,
+        attachment_filename=job_id + '_' + light + '.raw')

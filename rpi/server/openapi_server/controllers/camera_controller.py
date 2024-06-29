@@ -19,6 +19,7 @@ from openapi_server.controllers.camera_controller_impl import (
     camera_manual_focus_post_impl,
     camera_capture_post_impl,
     camera_metadata_get_impl,
+    camera_download_raw_get_impl
 )
 
 
@@ -45,6 +46,22 @@ def camera_capture_post():  # noqa: E501
     :rtype: Union[file, Tuple[file, int], Tuple[file, int, Dict[str, str]]
     """
     return camera_capture_post_impl()
+
+
+def camera_download_raw_get(job_id, light):  # noqa: E501
+    """Download raw file of a capture
+
+     # noqa: E501
+
+    :param job_id: 
+    :type job_id: str
+    :type job_id: str
+    :param light: 
+    :type light: str
+
+    :rtype: Union[file, Tuple[file, int], Tuple[file, int, Dict[str, str]]
+    """
+    return camera_download_raw_get_impl(job_id, light)
 
 
 def camera_exposure_post():  # noqa: E501

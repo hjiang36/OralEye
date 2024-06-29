@@ -262,6 +262,52 @@ paths:
                 properties:
                   message:
                     type: string
+  
+  /camera/download_raw:
+    get:
+      tags:
+        - camera
+      summary: Download raw file of a capture
+      parameters:
+        - name: job_id
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: light
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [ambient, white, blue]
+      responses:
+        '200':
+          description: Raw file retrieved successfully
+          content:
+            application/octet-stream:  
+              schema:
+                type: string
+                format: binary
+              
+        '404':
+          description: Raw file not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
 
   /lights/blue/max_time:
     post:

@@ -123,6 +123,7 @@ Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 *OralEyeApi.CameraApi* | [**cameraAutofocusPost**](docs/CameraApi.md#cameraAutofocusPost) | **POST** /camera/autofocus | Set auto-focus on/off
 *OralEyeApi.CameraApi* | [**cameraCapturePost**](docs/CameraApi.md#cameraCapturePost) | **POST** /camera/capture | Capture raw image
+*OralEyeApi.CameraApi* | [**cameraDownloadRawGet**](docs/CameraApi.md#cameraDownloadRawGet) | **GET** /camera/download_raw | Download raw file of a capture
 *OralEyeApi.CameraApi* | [**cameraExposurePost**](docs/CameraApi.md#cameraExposurePost) | **POST** /camera/exposure | Set exposure time
 *OralEyeApi.CameraApi* | [**cameraManualFocusPost**](docs/CameraApi.md#cameraManualFocusPost) | **POST** /camera/manual_focus | Set manual focus distance
 *OralEyeApi.CameraApi* | [**cameraMetadataGet**](docs/CameraApi.md#cameraMetadataGet) | **GET** /camera/metadata | Retrieve metadata of a capture
