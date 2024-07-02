@@ -46,6 +46,53 @@ paths:
       tags:
       - camera
       x-openapi-router-controller: openapi_server.controllers.camera_controller
+  /camera/download_raw:
+    get:
+      operationId: camera_download_raw_get
+      parameters:
+      - explode: true
+        in: query
+        name: job_id
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: light
+        required: true
+        schema:
+          enum:
+          - ambient
+          - white
+          - blue
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/octet-stream:
+              schema:
+                format: binary
+                type: string
+          description: Raw file retrieved successfully
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_lights_control_post_200_response'
+          description: Raw file not found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_lights_control_post_200_response'
+          description: Internal server error
+      summary: Download raw file of a capture
+      tags:
+      - camera
+      x-openapi-router-controller: openapi_server.controllers.camera_controller
   /camera/exposure:
     post:
       operationId: camera_exposure_post
