@@ -231,8 +231,8 @@ def capture_raw_squence():
 
         # If camera was running, restart it
         if camera_running:
-            pi_camera.start()
-            pi_camera.start_encoder(encoder, output)
+            #pi_camera.start()
+            #pi_camera.start_encoder(encoder, output)
             set_light_status(red_laser='on')
 
         camera_capturing = False 
