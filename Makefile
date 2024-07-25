@@ -29,12 +29,12 @@ install-rpi-deps:
 	sudo systemctl enable avahi-daemon
 	@echo "Install dependencies of the FLASK server"
 	sudo apt install -y python3 python3-pip
-	pip3 install -r $(FLASK_SERVER_DIR)/requirements.txt
+	pip3 install --break-system-packages -r $(FLASK_SERVER_DIR)/requirements.txt
 
 # Install flask server
 install-flask-server:
 	@echo "Installing Flask server..."
-	@pip install $(FLASK_SERVER_DIR)
+	@pip install --break-system-packages $(FLASK_SERVER_DIR)
 
 # Install service files
 install-services: $(SERVICES)
