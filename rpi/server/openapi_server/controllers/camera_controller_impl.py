@@ -17,9 +17,16 @@ from openapi_server.controllers.lights_controller_impl import set_light_status
 
 pi_camera = Picamera2()
 
+# Get raw resolution
+try:
+    config = pi_camera.create_still_configuration()
+    raw_resolution = config["raw"]["size"]
+except Exception as e:
+    print(f"Error got raw resolution: {e}")
+    raw_resolution = (4608, 2592)
+
 # Configuration for still capture with raw resolution
-raw_resolution = (4608, 2592)
-still_config = pi_camera.create_still_configuration(raw={"size": raw_resolution})
+still_config = pi_camera.create_still_configuration(raw={"format": "SRGGB10"}, sensor={"output_size": raw_resolution})
 
 # Configuration for video streaming
 video_config = pi_camera.create_video_configuration(main={"format": "RGB888", "size": (640, 480)})
@@ -149,9 +156,16 @@ def save_raw(raw_buffer: np.ndarray, output_file: str, metadata: dict, output_fo
     return raw_buffer
 
 def generate_thumbnail(raw_buffer: np.ndarray, thumbnail_size):
-    b = raw_buffer[::2, ::5]
-    g = raw_buffer[1::2, ::5]
-    r = raw_buffer[::2, 1::5]
+    step = 5
+    if raw_buffer.shape[1] == 2 * raw_resolution[0]:
+        # 16-bit capture, decode it to 8-bit
+        # discard the last 2-bit for preview thumbnail
+        raw_buffer = raw_buffer[:, 1::2]
+        step = 4
+
+    b = raw_buffer[::2, ::step]
+    g = raw_buffer[1::2, ::step]
+    r = raw_buffer[::2, 1::step]
 
     # Create an image
     img = np.zeros((r.shape[0], r.shape[1], 3), dtype=np.uint8)
