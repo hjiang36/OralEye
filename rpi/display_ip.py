@@ -18,7 +18,7 @@ def show_ip():
     root.configure(bg="black")
 
     ip_address = get_ip_address()
-    label = tk.Label(root, text=f"IP: {ip_address}", fg="white", bg="black", font=("Arial", 24))
+    label = tk.Label(root, text=f"IP: {ip_address}", fg="white", bg="black", font=("Arial", 16))
     label.pack(expand=True)
 
     # Automatically close the window after 10 seconds
