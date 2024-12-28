@@ -14,7 +14,7 @@ def get_ip_address():
 def show_ip():
     root = tk.Tk()
     root.title("IP Address")
-    root.geometry("320x240")
+    root.geometry("240x160")
     root.configure(bg="black")
 
     ip_address = get_ip_address()
