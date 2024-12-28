@@ -14,13 +14,13 @@ def get_ip_address():
 def show_ip():
     root = tk.Tk()
     root.title("IP Address")
+
     root.geometry("240x120")
     root.configure(bg="black")
 
     ip_address = get_ip_address()
     label = tk.Label(root, text=f"IP: {ip_address}", fg="white", bg="black", font=("Arial", 16))
     label.pack(expand=True)
-
     root.mainloop()
 
 if __name__ == "__main__":
