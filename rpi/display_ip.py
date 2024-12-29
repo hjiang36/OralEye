@@ -1,27 +1,65 @@
 import tkinter as tk
 import socket
+from PIL import Image, ImageTk
+from picamera2 import Picamera2
 
-def get_ip_address():
-    try:
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect(("8.8.8.8", 80))
-        ip_address = s.getsockname()[0]
-        s.close()
-    except Exception:
-        ip_address = "No network"
-    return ip_address
+class CameraApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("IP Address and Camera Preview")
+        self.root.geometry("240x120")
+        self.root.configure(bg="black")
 
-def show_ip():
-    root = tk.Tk()
-    root.title("IP Address")
+        # Display IP Address
+        ip_address = self.get_ip_address()
+        self.label = tk.Label(root, text=f"IP: {ip_address}", fg="white", bg="black", font=("Arial", 10))
+        self.label.pack(pady=10)
 
-    root.geometry("240x120")
-    root.configure(bg="black")
+        # Create a canvas for the live camera feed
+        self.canvas = tk.Canvas(root, width=640, height=360, bg="black")
+        self.canvas.pack()
 
-    ip_address = get_ip_address()
-    label = tk.Label(root, text=f"IP: {ip_address}", fg="white", bg="black", font=("Arial", 16))
-    label.pack(expand=True)
-    root.mainloop()
+        # Initialize Picamera2
+        self.picam = Picamera2()
+        self.picam_config = self.picam.create_preview_configuration(main={"size": (640, 360)})
+        self.picam.configure(self.picam_config)
+        self.picam.start()
 
+        # Update camera preview
+        self.update_camera()
+
+        # Handle window close
+        self.root.protocol("WM_DELETE_WINDOW", self.on_close)
+
+    def get_ip_address(self):
+        """Fetches the local IP address."""
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            s.connect(("8.8.8.8", 80))
+            ip_address = s.getsockname()[0]
+            s.close()
+        except Exception:
+            ip_address = "No network"
+        return ip_address
+
+    def update_camera(self):
+        """Captures a frame from the camera and updates the tkinter canvas."""
+        frame = self.picam.capture_array()
+        image = Image.fromarray(frame)
+        photo = ImageTk.PhotoImage(image)
+        self.canvas.create_image(0, 0, anchor=tk.NW, image=photo)
+        self.canvas.image = photo
+
+        # Schedule the next frame update
+        self.root.after(10, self.update_camera)
+
+    def on_close(self):
+        """Stops the camera and closes the application."""
+        self.picam.stop()
+        self.root.destroy()
+
+# Main application
 if __name__ == "__main__":
-    show_ip()
+    root = tk.Tk()
+    app = CameraApp(root)
+    root.mainloop()
