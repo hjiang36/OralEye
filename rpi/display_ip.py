@@ -48,6 +48,8 @@ class App:
             self.canvas.create_image(0, 0, anchor=tk.NW, image=photo)
             self.canvas.image = photo
 
+            print("Camera updated...")
+
         # Call this function again after 10ms
         self.root.after(30, self.update_camera)
 
