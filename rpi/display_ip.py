@@ -1,8 +1,7 @@
 import tkinter as tk
 import socket
 from PIL import Image, ImageTk
-from libcamera import CameraManager, Transform
-import numpy as np
+from picamera2 import Picamera2
 
 class CameraApp:
     def __init__(self, root):
@@ -20,16 +19,11 @@ class CameraApp:
         self.canvas = tk.Canvas(root, width=640, height=360, bg="black")
         self.canvas.pack()
 
-        # Initialize the camera
-        self.manager = CameraManager()
-        if not self.manager.cameras:
-            self.label.config(text="No cameras available!")
-            return
-
-        self.camera = self.manager.cameras[0]
-        self.camera.open()
-        self.camera.configure(VideoConfig=(480, 360), transform=Transform.HFLIP)
-        self.camera.start()
+        # Initialize Picamera2
+        self.picam = Picamera2()
+        self.picam_config = self.picam.create_preview_configuration(main={"size": (640, 360)})
+        self.picam.configure(self.picam_config)
+        self.picam.start()
 
         # Update camera preview
         self.update_camera()
@@ -50,30 +44,18 @@ class CameraApp:
 
     def update_camera(self):
         """Captures a frame from the camera and updates the tkinter canvas."""
-        request = self.camera.create_request()
-        self.camera.queue_request(request)
-        completed_request = self.camera.wait_for_request()
-        if completed_request is not None:
-            # Get frame data
-            buffer = completed_request.buffers[0]
-            width, height = buffer.metadata.size
-            data = np.frombuffer(buffer.plane_data(), dtype=np.uint8)
-            frame = data.reshape((height, width, 3))
-
-            # Convert frame to ImageTk
-            image = Image.fromarray(frame)
-            photo = ImageTk.PhotoImage(image)
-            self.canvas.create_image(0, 0, anchor=tk.NW, image=photo)
-            self.canvas.image = photo
+        frame = self.picam.capture_array()
+        image = Image.fromarray(frame)
+        photo = ImageTk.PhotoImage(image)
+        self.canvas.create_image(0, 0, anchor=tk.NW, image=photo)
+        self.canvas.image = photo
 
         # Schedule the next frame update
         self.root.after(10, self.update_camera)
 
     def on_close(self):
         """Stops the camera and closes the application."""
-        if self.camera:
-            self.camera.stop()
-            self.camera.close()
+        self.picam.stop()
         self.root.destroy()
 
 # Main application
