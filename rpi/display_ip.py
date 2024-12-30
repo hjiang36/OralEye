@@ -16,7 +16,7 @@ class CameraApp:
         self.label.pack(pady=10)
 
         # Create a canvas for the live camera feed
-        self.canvas = tk.Canvas(root, width=640, height=480, bg="black")
+        self.canvas = tk.Canvas(root, width=240, height=160, bg="black")
         self.canvas.pack()
 
         # Initialize Picamera2
