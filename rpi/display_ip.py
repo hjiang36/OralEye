@@ -7,7 +7,7 @@ class CameraApp:
     def __init__(self, root):
         self.root = root
         self.root.title("IP Address and Camera Preview")
-        self.root.geometry("240x120")
+        self.root.geometry("240x240")
         self.root.configure(bg="black")
 
         # Display IP Address
@@ -16,14 +16,20 @@ class CameraApp:
         self.label.pack(pady=10)
 
         # Create a canvas for the live camera feed
-        self.canvas = tk.Canvas(root, width=640, height=360, bg="black")
+        self.canvas = tk.Canvas(root, width=640, height=480, bg="black")
         self.canvas.pack()
 
         # Initialize Picamera2
         self.picam = Picamera2()
-        self.picam_config = self.picam.create_preview_configuration(main={"size": (640, 360)})
+        self.picam_config = self.picam.create_preview_configuration(main={"size": (640, 480)})
         self.picam.configure(self.picam_config)
         self.picam.start()
+
+        # Add Capture Button
+        self.capture_button = tk.Button(
+            root, text="Capture Photo", command=self.capture_photo, font=("Arial", 8), bg="green", fg="white"
+        )
+        self.capture_button.pack(pady=10)
 
         # Update camera preview
         self.update_camera()
