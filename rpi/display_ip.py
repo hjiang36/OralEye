@@ -58,6 +58,12 @@ class CameraApp:
 
         # Schedule the next frame update
         self.root.after(10, self.update_camera)
+    
+    def capture_photo(self):
+        """Captures a photo and saves it to disk."""
+        filename = "photo.jpg"  # You can customize the filename or use a timestamp
+        self.picam.capture_file(filename)
+        print(f"Photo saved to {filename}")
 
     def on_close(self):
         """Stops the camera and closes the application."""
