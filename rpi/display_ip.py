@@ -61,7 +61,7 @@ class CameraApp:
     
     def capture_photo(self):
         """Captures a photo and saves it to disk."""
-        filename = "photo.jpg"  # You can customize the filename or use a timestamp
+        filename = "/tmp/photo.jpg"
         self.picam.capture_file(filename)
         print(f"Photo saved to {filename}")
 
