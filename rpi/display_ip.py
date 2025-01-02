@@ -1,7 +1,9 @@
+from gpiozero import Button, LED
 import tkinter as tk
 import socket
 from PIL import Image, ImageTk
 from picamera2 import Picamera2
+import time
 
 class CameraApp:
     def __init__(self, root):
@@ -25,17 +27,44 @@ class CameraApp:
         self.picam.configure(self.picam_config)
         self.picam.start()
 
-        # Add Capture Button
-        self.capture_button = tk.Button(
-            root, text="Capture Photo", command=self.capture_photo, font=("Arial", 8), bg="green", fg="white"
-        )
-        self.capture_button.pack(pady=10)
+        # Setup GPIO
+        self.setup_gpio()
 
         # Update camera preview
         self.update_camera()
 
         # Handle window close
         self.root.protocol("WM_DELETE_WINDOW", self.on_close)
+
+    def setup_gpio(self):
+        """Setup GPIO using gpiozero."""
+        # Buttons
+        self.button_take_photo = Button(17)
+        self.button_take_photo.when_pressed = self.capture_photo
+
+        # LEDs
+        self.led_red = LED(16)
+        self.led_green = LED(20)
+        self.led_blue = LED(21)
+
+        # Buttons to control LEDs
+        self.button_red_led = Button(22)
+        self.button_green_led = Button(23)
+        self.button_blue_led = Button(27)
+
+        # Toggle LEDs on button press
+        self.button_red_led.when_pressed = self.toggle_led(self.led_red)
+        self.button_green_led.when_pressed = self.toggle_led(self.led_green)
+        self.button_blue_led.when_pressed = self.toggle_led(self.led_blue)
+
+    def toggle_led(self, led):
+        """Returns a function that toggles the specified LED."""
+        def _toggle():
+            if led.is_lit:
+                led.off()
+            else:
+                led.on()
+        return _toggle
 
     def get_ip_address(self):
         """Fetches the local IP address."""
@@ -58,10 +87,10 @@ class CameraApp:
 
         # Schedule the next frame update
         self.root.after(10, self.update_camera)
-    
+
     def capture_photo(self):
         """Captures a photo and saves it to disk."""
-        filename = "/tmp/photo.jpg"
+        filename = f"photo_{time.strftime('%Y%m%d_%H%M%S')}.jpg"
         self.picam.capture_file(filename)
         print(f"Photo saved to {filename}")
 
