@@ -1,11 +1,9 @@
+from gpiozero import Button, LED
 import tkinter as tk
 import socket
 from PIL import Image, ImageTk
 from picamera2 import Picamera2
-
-import RPi.GPIO as GPIO
 import time
-from threading import Thread
 
 class CameraApp:
     def __init__(self, root):
@@ -38,41 +36,35 @@ class CameraApp:
         # Handle window close
         self.root.protocol("WM_DELETE_WINDOW", self.on_close)
 
-        # Start GPIO event listener in a separate thread
-        self.gpio_thread = Thread(target=self.monitor_gpio, daemon=True)
-        self.gpio_thread.start()
-
     def setup_gpio(self):
-        """Setup GPIO pins for buttons and LEDs."""
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setwarnings(False)
+        """Setup GPIO using gpiozero."""
+        # Buttons
+        self.button_take_photo = Button(17)
+        self.button_take_photo.when_pressed = self.capture_photo
 
-        # Button pins
-        self.button_pin_take_photo = 17
-        self.button_pin_led_red = 22
-        self.button_pin_led_green = 23
-        self.button_pin_led_blue = 27
+        # LEDs
+        self.led_red = LED(16)
+        self.led_green = LED(20)
+        self.led_blue = LED(21)
 
-        # LED pins
-        self.led_red = 16
-        self.led_green = 20
-        self.led_blue = 21
+        # Buttons to control LEDs
+        self.button_red_led = Button(22)
+        self.button_green_led = Button(23)
+        self.button_blue_led = Button(27)
 
-        # Setup button pins as input with pull-up resistors
-        GPIO.setup(self.button_pin_take_photo, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.setup(self.button_pin_led_red, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.setup(self.button_pin_led_green, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.setup(self.button_pin_led_blue, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        # Toggle LEDs on button press
+        self.button_red_led.when_pressed = self.toggle_led(self.led_red)
+        self.button_green_led.when_pressed = self.toggle_led(self.led_green)
+        self.button_blue_led.when_pressed = self.toggle_led(self.led_blue)
 
-        # Setup LED pins as output
-        GPIO.setup(self.led_red, GPIO.OUT)
-        GPIO.setup(self.led_green, GPIO.OUT)
-        GPIO.setup(self.led_blue, GPIO.OUT)
-
-        # Initialize LEDs to OFF
-        GPIO.output(self.led_red, GPIO.LOW)
-        GPIO.output(self.led_green, GPIO.LOW)
-        GPIO.output(self.led_blue, GPIO.LOW)
+    def toggle_led(self, led):
+        """Returns a function that toggles the specified LED."""
+        def _toggle():
+            if led.is_lit:
+                led.off()
+            else:
+                led.on()
+        return _toggle
 
     def get_ip_address(self):
         """Fetches the local IP address."""
@@ -102,39 +94,9 @@ class CameraApp:
         self.picam.capture_file(filename)
         print(f"Photo saved to {filename}")
 
-    def toggle_led(self, led_pin):
-        """Toggles the state of the specified LED."""
-        current_state = GPIO.input(led_pin)
-        GPIO.output(led_pin, not current_state)
-        print(f"LED on pin {led_pin} is now {'ON' if not current_state else 'OFF'}")
-
-    def monitor_gpio(self):
-        """Monitors GPIO buttons for events."""
-        while True:
-            if GPIO.input(self.button_pin_take_photo) == GPIO.LOW:
-                print("Take Photo button pressed")
-                self.capture_photo()
-                time.sleep(0.5)  # Debounce delay
-
-            if GPIO.input(self.button_pin_led_red) == GPIO.LOW:
-                print("Red LED button pressed")
-                self.toggle_led(self.led_red)
-                time.sleep(0.5)
-
-            if GPIO.input(self.button_pin_led_green) == GPIO.LOW:
-                print("Green LED button pressed")
-                self.toggle_led(self.led_green)
-                time.sleep(0.5)
-
-            if GPIO.input(self.button_pin_led_blue) == GPIO.LOW:
-                print("Blue LED button pressed")
-                self.toggle_led(self.led_blue)
-                time.sleep(0.5)
-
     def on_close(self):
-        """Stops the camera, cleans up GPIO, and closes the application."""
+        """Stops the camera and closes the application."""
         self.picam.stop()
-        GPIO.cleanup()
         self.root.destroy()
 
 # Main application
