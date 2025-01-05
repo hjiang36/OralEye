@@ -9,7 +9,7 @@ class CameraApp:
     def __init__(self, root):
         self.root = root
         self.root.title("IP Address and Camera Preview")
-        self.root.geometry("240x320")
+        self.root.geometry("240x320+0+0")
         self.root.configure(bg="black")
 
         # Display IP Address
