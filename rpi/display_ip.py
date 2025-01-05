@@ -13,10 +13,21 @@ class CameraApp:
         self.root.geometry("240x320+0+0")
         self.root.configure(bg="black")
 
+        # Add an Exit button
+        self.exit_button = tk.Button(
+            root,
+            text="Exit",
+            command=self.on_close,  # Call on_close to clean up and exit
+            font=("Arial", 10),
+            bg="red",
+            fg="white"
+        )
+        self.exit_button.place(x=200, y=10, width=40, height=20)
+
         # Display IP Address
         ip_address = self.get_ip_address()
         self.label = tk.Label(root, text=f"IP: {ip_address}", fg="white", bg="black", font=("Arial", 10))
-        self.label.pack(pady=10)
+        self.label.place(x=0, y=40, width=240, height=30)
 
         # Create a canvas for the live camera feed
         self.canvas_width, self.canvas_height = 240, 300
