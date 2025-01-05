@@ -1,7 +1,7 @@
 from gpiozero import Button, LED
 import tkinter as tk
 import socket
-from PIL import Image, ImageTk
+from PIL import Image, ImageTk, ImageOps
 from picamera2 import Picamera2
 import time
 
@@ -9,7 +9,7 @@ class CameraApp:
     def __init__(self, root):
         self.root = root
         self.root.title("IP Address and Camera Preview")
-        self.root.geometry("240x240")
+        self.root.geometry("240x320")
         self.root.configure(bg="black")
 
         # Display IP Address
@@ -18,7 +18,8 @@ class CameraApp:
         self.label.pack(pady=10)
 
         # Create a canvas for the live camera feed
-        self.canvas = tk.Canvas(root, width=240, height=160, bg="black")
+        self.canvas_width, self.canvas_height = 240, 300
+        self.canvas = tk.Canvas(root, width=self.canvas_width, height=self.canvas_height, bg="black")
         self.canvas.pack()
 
         # Initialize Picamera2
@@ -81,12 +82,18 @@ class CameraApp:
         """Captures a frame from the camera and updates the tkinter canvas."""
         frame = self.picam.capture_array()
         image = Image.fromarray(frame)
+
+        # Resize the image to fit the canvas while maintaining aspect ratio
+        image = ImageOps.contain(
+            image, (self.canvas_width, self.canvas_height))
+
+        # Convert the resized image to a format tkinter can display
         photo = ImageTk.PhotoImage(image)
         self.canvas.create_image(0, 0, anchor=tk.NW, image=photo)
         self.canvas.image = photo
 
         # Schedule the next frame update
-        self.root.after(10, self.update_camera)
+        self.root.after(33, self.update_camera)
 
     def capture_photo(self):
         """Captures a photo and saves it to disk."""
