@@ -16,23 +16,23 @@ class CameraApp:
         # Add an Exit button
         self.exit_button = tk.Button(
             root,
-            text="Exit",
+            text="X",
             command=self.on_close,  # Call on_close to clean up and exit
             font=("Arial", 10),
-            bg="red",
+            bg="black",
             fg="white"
         )
-        self.exit_button.place(x=200, y=10, width=40, height=30)
+        self.exit_button.place(x=200, y=10, width=40, height=24)
 
         # Display IP Address
         ip_address = self.get_ip_address()
         self.label = tk.Label(root, text=f"IP: {ip_address}", fg="white", bg="black", font=("Arial", 10))
-        self.label.place(x=0, y=10, width=200, height=30)
+        self.label.place(x=0, y=10, width=200, height=24)
 
         # Create a canvas for the live camera feed
         self.canvas_width, self.canvas_height = 240, 300
         self.canvas = tk.Canvas(root, width=self.canvas_width, height=self.canvas_height, bg="black")
-        self.canvas.place(x=0, y=80)
+        self.canvas.place(x=0, y=30)
 
         # Initialize Picamera2
         self.picam = Picamera2()
