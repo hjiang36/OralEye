@@ -30,7 +30,7 @@ class CameraApp:
         self.label.place(x=0, y=10, width=200, height=24)
 
         # Create a canvas for the live camera feed
-        self.canvas_width, self.canvas_height = 240, 300
+        self.canvas_width, self.canvas_height = 420, 300
         self.canvas = tk.Canvas(root, width=self.canvas_width, height=self.canvas_height, bg="black")
         self.canvas.place(x=0, y=30)
 
@@ -94,6 +94,9 @@ class CameraApp:
         """Captures a frame from the camera and updates the tkinter canvas."""
         frame = self.picam.capture_array()
         image = Image.fromarray(frame)
+
+        # Rotate the image 90 degrees
+        image = image.rotate(-90, expand=True)
 
         # Resize the image to fit the canvas while maintaining aspect ratio
         image = ImageOps.contain(
