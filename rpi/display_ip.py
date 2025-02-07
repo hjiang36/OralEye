@@ -87,7 +87,8 @@ class CameraApp:
         if camera_id == self.camera_id:
             return  # No need to reconfigure if the camera is already selected
         camera_name = Picamera2.global_camera_info()[camera_id]["CameraName"]
-        self.picam = Picamera2(camera_name)  # Reinitialize Picamera2 with selected camera
+        print("Configuring camera:", camera_name)
+        self.picam = Picamera2(camera_name)
         self.picam.configure(self.picam.create_preview_configuration())
         self.picam.start()
 
@@ -114,31 +115,31 @@ class CameraApp:
             frame = self.picam.capture_array()
             image = Image.fromarray(frame)
 
-        # Rotate the image 90 degrees
-        image = image.rotate(-90, expand=True)
+            # Rotate the image 90 degrees
+            image = image.rotate(-90, expand=True)
 
-        # Resize the image to fit the canvas while maintaining aspect ratio
-        image = ImageOps.contain(
-            image, (self.canvas_width, self.canvas_height))
+            # Resize the image to fit the canvas while maintaining aspect ratio
+            image = ImageOps.contain(
+                image, (self.canvas_width, self.canvas_height))
 
-        # Draw a red crosshair in the center
-        draw = ImageDraw.Draw(image)
-        center_x, center_y = image.width // 2, image.height // 2
-        crosshair_length = min(image.width, image.height) // 10
-        line_width = 3
+            # Draw a red crosshair in the center
+            draw = ImageDraw.Draw(image)
+            center_x, center_y = image.width // 2, image.height // 2
+            crosshair_length = min(image.width, image.height) // 10
+            line_width = 3
 
-        # Draw horizontal and vertical lines
-        draw.line((center_x - crosshair_length, center_y, center_x + crosshair_length, center_y), fill="red", width=line_width)
-        draw.line((center_x, center_y - crosshair_length, center_x, center_y + crosshair_length), fill="red", width=line_width)
+            # Draw horizontal and vertical lines
+            draw.line((center_x - crosshair_length, center_y, center_x + crosshair_length, center_y), fill="red", width=line_width)
+            draw.line((center_x, center_y - crosshair_length, center_x, center_y + crosshair_length), fill="red", width=line_width)
 
 
-        # Convert the resized image to a format tkinter can display
-        photo = ImageTk.PhotoImage(image)
-        self.canvas.create_image(0, 0, anchor=tk.NW, image=photo)
-        self.canvas.image = photo
+            # Convert the resized image to a format tkinter can display
+            photo = ImageTk.PhotoImage(image)
+            self.canvas.create_image(0, 0, anchor=tk.NW, image=photo)
+            self.canvas.image = photo
 
-        # Schedule the next frame update
-        self.root.after(33, self.update_camera)
+            # Schedule the next frame update
+            self.root.after(33, self.update_camera)
 
     def capture_photo(self):
         """Captures a photo and saves it to disk."""
