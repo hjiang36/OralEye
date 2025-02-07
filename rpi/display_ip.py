@@ -38,6 +38,7 @@ class CameraApp:
         # Initialize Picamera2
         self.picam = Picamera2()
         self.camera_id = 0
+        self.camera_lock = threading.Lock()
         self.picam_config = self.picam.create_preview_configuration(main={"size": (640, 480)})
         self.picam.configure(self.picam_config)
         self.picam.start()
@@ -109,9 +110,9 @@ class CameraApp:
 
     def update_camera(self):
         """Captures a frame from the camera and updates the tkinter canvas."""
-        self.picam.switch_camera(self.camera_id)
-        frame = self.picam.capture_array()
-        image = Image.fromarray(frame)
+        with self.camera_lock:
+            frame = self.picam.capture_array()
+            image = Image.fromarray(frame)
 
         # Rotate the image 90 degrees
         image = image.rotate(-90, expand=True)
