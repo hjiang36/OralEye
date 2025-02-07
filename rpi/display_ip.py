@@ -105,9 +105,10 @@ class CameraApp:
     
     def switch_camera(self):
         """Switch between camera 0 and 1"""
-        self.camera_id = 1 - self.camera_id  # Toggle between 0 and 1
-        print(f"Switched to Camera {self.camera_id}")
-        self.configure_camera(self.camera_id)
+        camera_id = 1 - self.camera_id  # Toggle between 0 and 1
+        print(f"Switched to Camera {camera_id}")
+        self.configure_camera(camera_id)
+        self.camera_id = camera_id
 
     def update_camera(self):
         """Captures a frame from the camera and updates the tkinter canvas."""
