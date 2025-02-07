@@ -38,10 +38,10 @@ class CameraApp:
         # Initialize Picamera2
         self.camera_id = 0
         self.camera_lock = threading.Lock()
-        self.picam_config = self.picam.create_preview_configuration(main={"size": (640, 480)})
         self.picams = []
         for camera_id in range(2):
             picam = Picamera2(camera_id)
+            self.picam_config = picam.create_preview_configuration(main={"size": (640, 480)})
             picam.configure(self.picam_config)
             picam.start()
             self.picams.append(picam)
