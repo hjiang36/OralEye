@@ -1,9 +1,10 @@
 from gpiozero import Button, LED
 import tkinter as tk
 import socket
-from PIL import Image, ImageTk, ImageOps
+from PIL import Image, ImageTk, ImageOps, ImageDraw
 from picamera2 import Picamera2
 import time
+import threading
 
 class CameraApp:
     def __init__(self, root):
@@ -35,10 +36,15 @@ class CameraApp:
         self.canvas.place(x=0, y=30)
 
         # Initialize Picamera2
-        self.picam = Picamera2()
-        self.picam_config = self.picam.create_preview_configuration(main={"size": (640, 480)})
-        self.picam.configure(self.picam_config)
-        self.picam.start()
+        self.camera_id = 0
+        self.camera_lock = threading.Lock()
+        self.picams = []
+        for camera_id in range(2):
+            picam = Picamera2(camera_id)
+            self.picam_config = picam.create_preview_configuration(main={"size": (640, 480)})
+            picam.configure(self.picam_config)
+            picam.start()
+            self.picams.append(picam)
 
         # Setup GPIO
         self.setup_gpio()
@@ -56,19 +62,19 @@ class CameraApp:
         self.button_take_photo.when_pressed = self.capture_photo
 
         # LEDs
-        self.led_red = LED(16)
-        self.led_green = LED(20)
-        self.led_blue = LED(21)
+        self.led_laser = LED(21)
+        self.led_white = LED(20)
+        self.led_blue = LED(16)
 
         # Buttons to control LEDs
-        self.button_red_led = Button(22)
-        self.button_green_led = Button(23)
-        self.button_blue_led = Button(27)
+        self.button_laser_led = Button(27)
+        self.button_white_led = Button(23)
+        self.button_camera_swtich = Button(22)
 
         # Toggle LEDs on button press
-        self.button_red_led.when_pressed = self.toggle_led(self.led_red)
-        self.button_green_led.when_pressed = self.toggle_led(self.led_green)
-        self.button_blue_led.when_pressed = self.toggle_led(self.led_blue)
+        self.button_laser_led.when_pressed = self.toggle_led(self.led_laser)
+        self.button_white_led.when_pressed = self.toggle_led(self.led_white)
+        self.button_camera_swtich.when_pressed = self.switch_camera
 
     def toggle_led(self, led):
         """Returns a function that toggles the specified LED."""
@@ -89,36 +95,67 @@ class CameraApp:
         except Exception:
             ip_address = "No network"
         return ip_address
+    
+    def switch_camera(self):
+        """Switch between camera 0 and 1"""
+        with self.camera_lock:
+            self.camera_id = 1 - self.camera_id  # Toggle between 0 and 1
+            print(f"Switched to Camera {self.camera_id}")
 
     def update_camera(self):
         """Captures a frame from the camera and updates the tkinter canvas."""
-        frame = self.picam.capture_array()
-        image = Image.fromarray(frame)
+        with self.camera_lock:
+            frame = self.picams[self.camera_id].capture_array()
+            image = Image.fromarray(frame)
 
-        # Rotate the image 90 degrees
-        image = image.rotate(-90, expand=True)
+            # Rotate the image 90 degrees
+            image = image.rotate(90 * (self.camera_id * 2 - 1), expand=True)
 
-        # Resize the image to fit the canvas while maintaining aspect ratio
-        image = ImageOps.contain(
-            image, (self.canvas_width, self.canvas_height))
+            # Resize the image to fit the canvas while maintaining aspect ratio
+            image = ImageOps.contain(
+                image, (self.canvas_width, self.canvas_height))
 
-        # Convert the resized image to a format tkinter can display
-        photo = ImageTk.PhotoImage(image)
-        self.canvas.create_image(0, 0, anchor=tk.NW, image=photo)
-        self.canvas.image = photo
+            # Draw a red crosshair in the center
+            draw = ImageDraw.Draw(image)
+            center_x, center_y = image.width // 2, image.height // 2
+            crosshair_length = min(image.width, image.height) // 10
+            line_width = 3
 
-        # Schedule the next frame update
-        self.root.after(33, self.update_camera)
+            # Draw horizontal and vertical lines
+            draw.line((center_x - crosshair_length, center_y, center_x + crosshair_length, center_y), fill="red", width=line_width)
+            draw.line((center_x, center_y - crosshair_length, center_x, center_y + crosshair_length), fill="red", width=line_width)
+
+
+            # Convert the resized image to a format tkinter can display
+            photo = ImageTk.PhotoImage(image)
+            self.canvas.create_image(0, 0, anchor=tk.NW, image=photo)
+            self.canvas.image = photo
+
+            # Schedule the next frame update
+            self.root.after(33, self.update_camera)
 
     def capture_photo(self):
         """Captures a photo and saves it to disk."""
-        filename = f"photo_{time.strftime('%Y%m%d_%H%M%S')}.jpg"
-        self.picam.capture_file(filename)
+        # Toggle the white LED on for a brief moment
+        self.led_white.on()
+        filename = f"photo_{time.strftime('%Y%m%d_%H%M')}_white.jpg"
+        self.picams[self.camera_id].capture_file(filename)
+        time.sleep(0.5)
+        self.led_white.off()
+
+        # Toggle the blue LED on for a brief moment
+        self.led_blue.on()
+        filename = f"photo_{time.strftime('%Y%m%d_%H%M')}_blue.jpg"
+        self.picams[self.camera_id].capture_file(filename)
+        time.sleep(0.5)
+        self.led_blue.off()
+
         print(f"Photo saved to {filename}")
 
     def on_close(self):
         """Stops the camera and closes the application."""
-        self.picam.stop()
+        for picam in self.picams:
+            picam.stop()
         self.root.destroy()
 
 # Main application
