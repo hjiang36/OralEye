@@ -4,6 +4,7 @@ import socket
 from PIL import Image, ImageTk, ImageOps, ImageDraw
 from picamera2 import Picamera2
 import time
+import threading
 
 class CameraApp:
     def __init__(self, root):
@@ -79,6 +80,15 @@ class CameraApp:
             else:
                 led.on()
         return _toggle
+    
+    def configure_camera(self, camera_id):
+        """Configure the camera to use the specified camera_id"""
+        if camera_id == self.camera_id:
+            return  # No need to reconfigure if the camera is already selected
+        camera_name = Picamera2.global_camera_info()[camera_id]["CameraName"]
+        self.picam = Picamera2(camera_name)  # Reinitialize Picamera2 with selected camera
+        self.picam.configure(self.picam.create_preview_configuration())
+        self.picam.start()
 
     def get_ip_address(self):
         """Fetches the local IP address."""
@@ -95,7 +105,7 @@ class CameraApp:
         """Switch between camera 0 and 1"""
         self.camera_id = 1 - self.camera_id  # Toggle between 0 and 1
         print(f"Switched to Camera {self.camera_id}")
-        self.update_preview()
+        self.configure_camera(self.camera_id)
 
     def update_camera(self):
         """Captures a frame from the camera and updates the tkinter canvas."""
@@ -142,7 +152,7 @@ class CameraApp:
         filename = f"photo_{time.strftime('%Y%m%d_%H%M')}_blue.jpg"
         self.picam.capture_file(filename)
         self.led_blue.off()
-        
+
         print(f"Photo saved to {filename}")
 
     def on_close(self):
