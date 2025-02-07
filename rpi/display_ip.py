@@ -86,9 +86,9 @@ class CameraApp:
         """Configure the camera to use the specified camera_id"""
         if camera_id == self.camera_id:
             return  # No need to reconfigure if the camera is already selected
-        camera_name = Picamera2.global_camera_info()[camera_id]["CameraName"]
-        print("Configuring camera:", camera_name)
-        self.picam = Picamera2(camera_name)
+        # print(Picamera2.global_camera_info())
+        # camera_name = Picamera2.global_camera_info()[camera_id]["CameraName"]
+        self.picam = Picamera2(camera_id)
         self.picam.configure(self.picam.create_preview_configuration())
         self.picam.start()
 
