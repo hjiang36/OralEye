@@ -59,9 +59,9 @@ class CameraApp:
         self.button_take_photo.when_pressed = self.capture_photo
 
         # LEDs
-        self.led_laser = LED(16)
+        self.led_laser = LED(21)
         self.led_white = LED(20)
-        self.led_blue = LED(21)
+        self.led_blue = LED(16)
 
         # Buttons to control LEDs
         self.button_laser_led = Button(27)
@@ -146,12 +146,14 @@ class CameraApp:
         self.led_white.on()
         filename = f"photo_{time.strftime('%Y%m%d_%H%M')}_white.jpg"
         self.picam.capture_file(filename)
+        time.sleep(0.5)
         self.led_white.off()
 
         # Toggle the blue LED on for a brief moment
         self.led_blue.on()
         filename = f"photo_{time.strftime('%Y%m%d_%H%M')}_blue.jpg"
         self.picam.capture_file(filename)
+        time.sleep(0.5)
         self.led_blue.off()
 
         print(f"Photo saved to {filename}")
