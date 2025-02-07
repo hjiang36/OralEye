@@ -109,7 +109,7 @@ class CameraApp:
             image = Image.fromarray(frame)
 
             # Rotate the image 90 degrees
-            image = image.rotate(-90, expand=True)
+            image = image.rotate(90 * (self.camera_id * 2 - 1), expand=True)
 
             # Resize the image to fit the canvas while maintaining aspect ratio
             image = ImageOps.contain(
