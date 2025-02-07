@@ -36,12 +36,15 @@ class CameraApp:
         self.canvas.place(x=0, y=30)
 
         # Initialize Picamera2
-        self.picam = Picamera2()
         self.camera_id = 0
         self.camera_lock = threading.Lock()
         self.picam_config = self.picam.create_preview_configuration(main={"size": (640, 480)})
-        self.picam.configure(self.picam_config)
-        self.picam.start()
+        self.picams = []
+        for camera_id in range(2):
+            picam = Picamera2(camera_id)
+            picam.configure(self.picam_config)
+            picam.start()
+            self.picams.append(picam)
 
         # Setup GPIO
         self.setup_gpio()
@@ -81,16 +84,6 @@ class CameraApp:
             else:
                 led.on()
         return _toggle
-    
-    def configure_camera(self, camera_id):
-        """Configure the camera to use the specified camera_id"""
-        if camera_id == self.camera_id:
-            return  # No need to reconfigure if the camera is already selected
-        # print(Picamera2.global_camera_info())
-        # camera_name = Picamera2.global_camera_info()[camera_id]["CameraName"]
-        self.picam = Picamera2(camera_id)
-        self.picam.configure(self.picam.create_preview_configuration())
-        self.picam.start()
 
     def get_ip_address(self):
         """Fetches the local IP address."""
@@ -105,15 +98,14 @@ class CameraApp:
     
     def switch_camera(self):
         """Switch between camera 0 and 1"""
-        camera_id = 1 - self.camera_id  # Toggle between 0 and 1
-        print(f"Switched to Camera {camera_id}")
-        self.configure_camera(camera_id)
-        self.camera_id = camera_id
+        with self.camera_lock:
+            self.camera_id = 1 - self.camera_id  # Toggle between 0 and 1
+            print(f"Switched to Camera {self.camera_id}")
 
     def update_camera(self):
         """Captures a frame from the camera and updates the tkinter canvas."""
         with self.camera_lock:
-            frame = self.picam.capture_array()
+            frame = self.picams[self.camera_id].capture_array()
             image = Image.fromarray(frame)
 
             # Rotate the image 90 degrees
@@ -147,14 +139,14 @@ class CameraApp:
         # Toggle the white LED on for a brief moment
         self.led_white.on()
         filename = f"photo_{time.strftime('%Y%m%d_%H%M')}_white.jpg"
-        self.picam.capture_file(filename)
+        self.picams[self.camera_id].capture_file(filename)
         time.sleep(0.5)
         self.led_white.off()
 
         # Toggle the blue LED on for a brief moment
         self.led_blue.on()
         filename = f"photo_{time.strftime('%Y%m%d_%H%M')}_blue.jpg"
-        self.picam.capture_file(filename)
+        self.picams[self.camera_id].capture_file(filename)
         time.sleep(0.5)
         self.led_blue.off()
 
@@ -162,7 +154,8 @@ class CameraApp:
 
     def on_close(self):
         """Stops the camera and closes the application."""
-        self.picam.stop()
+        for picam in self.picams:
+            picam.stop()
         self.root.destroy()
 
 # Main application
