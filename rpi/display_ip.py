@@ -1,7 +1,7 @@
 from gpiozero import Button, LED
 import tkinter as tk
 import socket
-from PIL import Image, ImageTk, ImageOps
+from PIL import Image, ImageTk, ImageOps, ImageDraw
 from picamera2 import Picamera2
 import time
 
@@ -36,6 +36,7 @@ class CameraApp:
 
         # Initialize Picamera2
         self.picam = Picamera2()
+        self.camera_id = 0
         self.picam_config = self.picam.create_preview_configuration(main={"size": (640, 480)})
         self.picam.configure(self.picam_config)
         self.picam.start()
@@ -56,19 +57,19 @@ class CameraApp:
         self.button_take_photo.when_pressed = self.capture_photo
 
         # LEDs
-        self.led_red = LED(16)
-        self.led_green = LED(20)
+        self.led_laser = LED(16)
+        self.led_white = LED(20)
         self.led_blue = LED(21)
 
         # Buttons to control LEDs
-        self.button_red_led = Button(22)
-        self.button_green_led = Button(23)
-        self.button_blue_led = Button(27)
+        self.button_laser_led = Button(22)
+        self.button_white_led = Button(23)
+        self.button_camera_swtich = Button(27)
 
         # Toggle LEDs on button press
-        self.button_red_led.when_pressed = self.toggle_led(self.led_red)
-        self.button_green_led.when_pressed = self.toggle_led(self.led_green)
-        self.button_blue_led.when_pressed = self.toggle_led(self.led_blue)
+        self.button_laser_led.when_pressed = self.toggle_led(self.led_laser)
+        self.button_white_led.when_pressed = self.toggle_led(self.led_white)
+        self.button_camera_swtich.when_pressed = self.switch_camera
 
     def toggle_led(self, led):
         """Returns a function that toggles the specified LED."""
@@ -89,9 +90,16 @@ class CameraApp:
         except Exception:
             ip_address = "No network"
         return ip_address
+    
+    def switch_camera(self):
+        """Switch between camera 0 and 1"""
+        self.camera_id = 1 - self.camera_id  # Toggle between 0 and 1
+        print(f"Switched to Camera {self.camera_id}")
+        self.update_preview()
 
     def update_camera(self):
         """Captures a frame from the camera and updates the tkinter canvas."""
+        self.picam.switch_camera(self.camera_id)
         frame = self.picam.capture_array()
         image = Image.fromarray(frame)
 
@@ -101,6 +109,17 @@ class CameraApp:
         # Resize the image to fit the canvas while maintaining aspect ratio
         image = ImageOps.contain(
             image, (self.canvas_width, self.canvas_height))
+
+        # Draw a red crosshair in the center
+        draw = ImageDraw.Draw(image)
+        center_x, center_y = image.width // 2, image.height // 2
+        crosshair_length = min(image.width, image.height) // 10
+        line_width = 3
+
+        # Draw horizontal and vertical lines
+        draw.line((center_x - crosshair_length, center_y, center_x + crosshair_length, center_y), fill="red", width=line_width)
+        draw.line((center_x, center_y - crosshair_length, center_x, center_y + crosshair_length), fill="red", width=line_width)
+
 
         # Convert the resized image to a format tkinter can display
         photo = ImageTk.PhotoImage(image)
@@ -112,8 +131,18 @@ class CameraApp:
 
     def capture_photo(self):
         """Captures a photo and saves it to disk."""
-        filename = f"photo_{time.strftime('%Y%m%d_%H%M%S')}.jpg"
+        # Toggle the white LED on for a brief moment
+        self.led_white.on()
+        filename = f"photo_{time.strftime('%Y%m%d_%H%M')}_white.jpg"
         self.picam.capture_file(filename)
+        self.led_white.off()
+
+        # Toggle the blue LED on for a brief moment
+        self.led_blue.on()
+        filename = f"photo_{time.strftime('%Y%m%d_%H%M')}_blue.jpg"
+        self.picam.capture_file(filename)
+        self.led_blue.off()
+        
         print(f"Photo saved to {filename}")
 
     def on_close(self):
