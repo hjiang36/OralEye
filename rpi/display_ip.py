@@ -64,9 +64,9 @@ class CameraApp:
         self.led_blue = LED(21)
 
         # Buttons to control LEDs
-        self.button_laser_led = Button(22)
+        self.button_laser_led = Button(27)
         self.button_white_led = Button(23)
-        self.button_camera_swtich = Button(27)
+        self.button_camera_swtich = Button(22)
 
         # Toggle LEDs on button press
         self.button_laser_led.when_pressed = self.toggle_led(self.led_laser)
