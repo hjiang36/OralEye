@@ -43,6 +43,11 @@ class CameraApp:
             picam = Picamera2(camera_id)
             self.picam_config = picam.create_preview_configuration(main={"size": (640, 480)})
             picam.configure(self.picam_config)
+            
+            # lens position is the diopters (reciprocal of focus distance)
+            focus_distance_mm = 100 # focus distance in mm
+            lens_position = 1000.0 / focus_distance_mm
+            picam.set_controls({'LensPosition': lens_position})
             picam.start()
             self.picams.append(picam)
 
